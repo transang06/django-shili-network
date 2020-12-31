@@ -1,0 +1,312 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% block title %}Trang Cá Nhân{% endblock %}
+{% block scripts %}
+    {% if username %}
+        username = (`{{ username }}`)
+    {% endif %}
+{% endblock scripts %}
+{% block bar %}
+
+{% endblock bar %}
+
+{% block noidung %}
+    <div id="profile">
+        <template v-for="profile in get_profile.profile">
+
+            <div v-if="profile.cover_image" class="backgroundProfile"
+                 :style="{ 'background-image': [`url(/media/${profile.cover_image}`]}"></div>
+            <div v-else class="backgroundProfile"></div>
+            <div class="d-flex flex-row align-content-around justify-content-around ">
+                <div id="logo" v-if="profile.avatar"
+                     :style="{'background-image': [`url(/media/${profile.avatar}`]}"></div>
+                <div id="logo" v-else
+                     style="background-image: url({% static 'user/images/avatar.png' %});"></div>
+            </div>
+
+
+            <h2 class="text-center my-2" @click="open_link(`/profile/${ profile.username}`)">
+                [[profile.full_name]] </h2>
+            <div id="profile_icon" class="d-flex flex-row justify-content-center">
+                <i @click="themes='thongtin'" class="fas fa-info-circle mx-4"></i>
+                <i @click="themes='profile'" class="fas fa-address-book mx-4"></i>
+                <i @click="themes='dangtheodoi'" class="fas fa-users mx-4"></i>
+                <i @click="add_follow(profile.user_id)" class="fas fa-user-plus mx-4"></i>
+            </div>
+
+
+            <div class="user_follow" v-if="themes==='dangtheodoi'">
+                <h3>Đang theo dõi</h3>
+                <button @click="themes='duoctheodoi'" type="button" class="btn btn-secondary my-3">Xem người theo dõi
+                </button>
+                <template v-if="get_profile.dangtheodoi.length">
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                        <template v-for="user_item in get_profile.dangtheodoi">
+                            <div class="col">
+                                <div class="card">
+                                    <img v-if="user_item.avatar" :src="`/media/${user_item.avatar}`"
+                                         class="avatar_boxFriend"
+                                         :alt="user_item.avatar">
+                                    <img v-else src="{% static 'user/images/avatar.png' %}"
+                                         class="avatar_boxFriend"
+                                         alt="avatar">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">[[user_item.full_name]]</h5>
+                                        <p @click="open_link(`/profile/${ user_item.username}`)" class="card-text">
+                                            @[[user_item.username]]</p>
+                                        <i class="far fa-comment-alt mx-5"></i>
+                                        <i @click="add_follow(user_item.id)" class="fas fa-plus mx-5"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+                <template v-else>
+                    <h4>Không có ai trong danh sách này</h4>
+                </template>
+            </div>
+            <div class="user_follow" v-if="themes==='duoctheodoi'">
+                <h3>Người theo dõi</h3>
+                <button @click="themes='dangtheodoi'" type="button" class="btn btn-secondary my-3">Xem ngươi đang theo
+                    dõi
+                </button>
+                <template v-if="get_profile.duoctheodoi.length">
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                        <template v-for="user_item in get_profile.duoctheodoi">
+                            <div class="col">
+                                <div class="card">
+                                    <img v-if="user_item.avatar" :src="`/media/${user_item.avatar}`"
+                                         class="avatar_boxFriend"
+                                         :alt="user_item.avatar">
+                                    <img v-else src="{% static 'user/images/avatar.png' %}"
+                                         class="avatar_boxFriend"
+                                         alt="avatar">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">[[user_item.full_name]]</h5>
+                                        <p @click="open_link(`/profile/${ user_item.username}`)" class="card-text">
+                                            @[[user_item.username]]</p>
+                                        <i class="far fa-comment-alt mx-5"></i>
+                                        <i @click="add_follow(user_item.id)" class="fas fa-plus mx-5"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+                <template v-else>
+                    <h4>Không có ai trong danh sách này</h4>
+                </template>
+            </div>
+            <div class="user_follow" v-if="themes==='thongtin'">
+                <div v-if="profile.is_superuser == 1" class="loaitaikhoan"><i
+                        class="fab fa-artstation">
+                </i>&nbsp; Người sáng lập &nbsp;<i class="fab fa-artstation"></i></div>
+                <div class="intro" v-if="profile.intro"><i class="fab fa-playstation"></i>&nbsp;
+                    [[profile.intro]]
+                </div>
+                <div class="user_thongtin" v-if="profile.address">
+                    <i class="fas fa-map-marked"></i>
+                    <div>[[profile.address]]</div>
+                </div>
+                <div v-if="profile.user_id == user_id" class="user_thongtin">
+                    <i class="fas fa-envelope"></i>
+                    <div>[[profile.email]]</div>
+                </div>
+                <div v-else class="user_thongtin">
+                    <i class="fas fa-envelope"></i>
+                    <div>Chỉ có chủ tài khoản này mới thấy được</div>
+                </div>
+                <div class="user_thongtin">
+                    <i class="fas fa-venus-mars"></i>
+                    <div>[[profile.gender]]</div>
+                </div>
+                <div class="user_thongtin">
+                    <i class="fas fa-birthday-cake"></i>
+                    <div>[[profile.birthday]]</div>
+                </div>
+                <div class="date_joined">Gia nhập lúc [[profile.date_joined]]</div>
+                {% if username ==  user.username %}
+                    <div class="container mt-3 btnEdit">
+                        <button @click="themes='suathongtin'" type="button" class="btn btn-secondary"><i
+                                class="far fa-edit"></i>&emsp;Thay đổi thông tin
+                        </button>
+                        <button @click="themes='editAvatar'" type="button" class="btn btn-secondary"><i
+                                class="fas fa-upload "></i>&emsp;Thay đổi ảnh đại diện
+                        </button>
+                        <button @click="themes='editCoverImage'" type="button" class="btn btn-secondary"><i
+                                class="fas fa-upload"></i>&emsp;Thay đổi ảnh bìa
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if username ==  user.username %}
+                <template v-if="themes==='suathongtin'">
+                    <div class="user_follow">
+                        {% csrf_token %}
+                        <div class="user_thongtin_edit">
+                            <i class="fas fa-signature"></i>
+                            <input type="text" id="first_name"
+                                   v-model="edit.first_name=profile.first_name">
+                        </div>
+                        <div class="user_thongtin_edit">
+                            <i class="fas fa-signature"></i>
+                            <input type="text" id="last_name"
+                                   v-model="edit.last_name=profile.last_name">
+                        </div>
+                        <div class="user_thongtin_edit">
+                            <i class="fab fa-playstation"></i>
+                            <input type="text" id="intro" v-model="edit.intro=profile.intro">
+                        </div>
+                        <div class="user_thongtin_edit">
+                            <i class="fas fa-map-marked"></i>
+                            <input type="text" id="address" v-model="edit.address=profile.address">
+                        </div>
+                        <div class="user_thongtin_edit">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="email" v-model="edit.email=profile.email">
+                        </div>
+
+                        <div class="user_thongtin_edit">
+                            <i class="fas fa-venus-mars"></i>
+                            <select v-model="edit.gender=profile.gender">
+                                <option disabled value="">Giới tính</option>
+                                <option>Nam</option>
+                                <option>Nữ</option>
+                            </select>
+                        </div>
+                        <div class="user_thongtin_edit">
+                            <i class="fas fa-birthday-cake"></i>
+                            <input type="date" v-model="edit.birthday=profile.birthday">
+                        </div>
+                        <small v-show="edit.results">[[edit.results]]</small>
+                        <div class="container mt-3 btnEdit">
+                            <button @click="forgotPass_func(profile.email)" type="button" class="btn btn-secondary"><i
+                                    class="far fa-edit"></i> Đổi mật khẩu
+                            </button>
+                            <button @click="edit_profile" type="button" class="btn btn-secondary"><i
+                                    class="fas fa-save"></i> Lưu thay đổi
+                            </button>
+                        </div>
+
+
+                    </div>
+                </template>
+                <template v-if="themes==='editCoverImage'">
+                    <div class="user_follow">
+                        <form action="{% url 'user:edit_av_bg' %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <label for="formFileLg" class="form-label">Tải lên ảnh bìa mới</label>
+                            <input class="form-control form-control-lg col-8" id="formFileLg" type="file"
+                                   accept="image/*" name="new_cover_image">
+                            <button type="submit" class="btn btn-secondary mt-5">Xác nhận thay đổi</button>
+                        </form>
+                    </div>
+                </template>
+                <template v-if="themes==='editAvatar'">
+                    <div class="user_follow">
+                        <form action="{% url 'user:edit_av_bg' %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <label for="formFileLg" class="form-label">Tải lên ảnh đại diện mới</label>
+                            <input class="form-control form-control-lg col-8" id="formFileLg" type="file"
+                                   accept="image/*" name="new_avatar">
+                            <button type="submit" class="btn btn-secondary mt-5">Xác nhận thay đổi</button>
+                        </form>
+                    </div>
+                </template>
+
+
+            {% endif %}
+
+            <div class="user_follow" v-if="themes==='profile'">
+
+                <template v-for="(item) in get_profile.profile_posts">
+                    <div class="baidang">
+                        <div class="post_thongtin">
+                            <img v-if="item.avatar" :src="`/media/${item.avatar}`"
+                                 class="post_avatar"
+                                 :alt="item.avatar" alt="">
+                            <img v-else src="{% static 'user/images/avatar.png' %}"
+                                 class="post_avatar" alt="">
+                            <div>
+
+                                <div>
+                                    <span class="post_name" @click="open_link(`/profile/${ item.username}`)">
+                                        [[item.full_name]]</span>
+                                    <label class="post_feeling"><i
+                                            class="fas fa-check-circle"></i>
+                                        [[item.feeling]]</label>
+                                </div>
+                                <div>
+                                    <a class="post_time"
+                                       href="">[[item.created_at]] </a>
+                                    <label class="post_public"><i
+                                            class="fas fa-globe-europe"> </i>
+                                        [[item.public]]</label>
+                                </div>
+                            </div>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-light dropdown-toggle"
+                                        data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false">
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    {% if post.user_id == user.id %}
+                                        <a class="dropdown-item" href="">Sửa</a>
+                                        <a class="dropdown-item" href="">Xóa</a>
+                                    {% else %}
+                                        <a class="dropdown-item">Đây không phải bài viết của bạn</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="post_content">[[item.content]]</div>
+                        <div class="post_hashtag">
+                            <a href=""><i class="fas fa-hashtag"></i>[[item.hashtag]]</a>
+                        </div>
+
+                        <img class="post_image" v-if="item.photo" :src="`/media/${item.photo}`">
+
+                        <template v-for="cmt in comment.comment_show[`${item.post_id}`]">
+                            <template v-for="key in cmt">
+                                <div class="comment">
+                                    <div>
+                                        <span class="comment_name"
+                                              @click="openlink(`/profile/${ key.username}`)">[[key.fullname]]</span>
+                                        <span class="comment_created"><i class="fas fa-clock"></i> [[key.created_at]]
+                                    </span>
+                                    </div>
+                                    <div class="comment_content">[[key.content]]</div>
+                                    <template v-if="user_id == key.user_id ">
+                                        <i @click="comment_delete_func(item.post_id,key.comment_id)"
+                                           class="fas fa-times"></i>
+                                    </template>
+                                </div>
+                            </template>
+                        </template>
+                        <div class="form-comment">
+
+                            <input type="hidden"
+                                   v-model="comment.content_input1[`${item.post_id}`]">
+                            <input type="text" v-model="comment.content_input[`${item.post_id}`]"
+                                   @keyup.enter="comment_func(item.post_id)"
+                                   class="form-control"
+                                   placeholder="Để lại bình luận của bạn">
+                            <button class="btn btn-dark" @click="comment_show_func(item.post_id)">Show cmt</button>
+                        </div>
+
+                    </div>
+                    <hr>
+                </template>
+
+            </div>
+        </template>
+    </div>
+
+
+
+
+
+
+{% endblock noidung %}

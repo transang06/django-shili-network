@@ -1,0 +1,52 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% block title %}Show Poss{% endblock %}
+{% block noidung %}
+        <form action="{% url 'post:set_post' %}" enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+
+            <div class="form-group">
+                                <textarea class="form-control" name="content" placeholder="How do you feel that "
+                                          rows="3"></textarea>
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">#</span>
+                </div>
+                <select class="custom-select" name="feeling" id="inputGroupSelect02">
+                    <option>Cảm thấy vui sướng</option>
+                    <option>Cảm thấy khá tệ</option>
+                    <option>Cảm thấy thú vị</option>
+                </select>
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">#</span>
+                </div>
+                <div class="custom-file">
+                    <input type="file" name="photo" accept='image/*' class="custom-file-input"
+                           id="inputGroupFile01"
+                           aria-describedby="inputGroupFileAddon01">
+                    <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                </div>
+
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">#</span>
+                </div>
+                <input type="text" name="hashtag" class="form-control" required
+                       placeholder="Hashtag"
+                       aria-label="Username" aria-describedby="basic-addon1">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">#</span>
+                </div>
+                <select class="form-control" name="public">
+                    <option>Công Khai</option>
+                    <option>Chỉ Mình Tôi</option>
+                </select>
+                <div class="input-group-append">
+                    <button class="btn  btn-secondary">Submit</button>
+                </div>
+            </div>
+        </form>
+
+{% endblock noidung %}

@@ -1,0 +1,14 @@
+{% extends 'home/index.html' %}
+{% block title %}Xác thực tài khoản{% endblock %}
+{% block content %}
+    <div class="welcome">
+        <div>
+            <div id="chao">WELCOME TO <span>Shili</span></div>
+        </div>
+        <p class="chu">Bắt trọn khoảnh khắc - Dẫn dắt xu hướng </p>
+        <hr>
+        <p class="chu">Xin chào {{ email }} tài khoản của bạn đã được kích hoạt. Hãy đăng nhập nhé</p>
+     <a href="{% url  'home:home' %}" class="btn-grad"  >Đăng Nhập</a>
+    </div>
+{% endblock %}
+

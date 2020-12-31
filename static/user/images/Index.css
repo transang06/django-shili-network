@@ -1,0 +1,221 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Commissioner:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bree+Serif&display=swap'); /*tên*/
+html {
+    scroll-behavior: smooth;
+    font-family: 'Roboto Mono', monospace;
+}
+.loader-container {
+    width: 100%;
+    height: 100vh;
+    background: #000;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+.loader {
+    width: 50px;
+    height: 50px;
+    border: 5px solid;
+    color: #3498db;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: loader 1s linear infinite;
+}
+
+@keyframes loader {
+    25% {
+        color: #e74545;
+    }
+    50% {
+        color: #366b18;
+    }
+    75% {
+        color: #197dc8;
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+a {
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+}
+
+li {
+    list-style: none;
+}
+
+h1 {
+    margin: 0;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template: 200px 80px 50px 550px 50px/ 1fr 5fr 1fr;
+    background-color: #f0f2f5;
+    color: rgb(255, 255, 255);
+}
+
+#Intro {
+    grid-area: 1/2/2/3;
+    display: grid;
+    grid-template: 1fr 3fr  1fr / 3fr 1fr 3fr;
+
+}
+
+#divlogo {
+    grid-area: 2/2/4/3;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    align-content: space-around;
+}
+
+#logo {
+    width: 150px;
+    height: 150px;
+    background-image: url('../image/Avatar.png');
+    background-size: cover;
+    background-position: center center;
+    border: 5px solid #ffffff;
+    border-radius: 50%;
+}
+
+#logo:hover, #logo:active {
+    border: 5px solid #00465c;
+    background-size: 125%;
+    border-radius: 35%;
+    transition: all 0.5s linear;
+}
+
+#background {
+    grid-area: 1/1/3/4;
+    background-image: url('../image/bg1.jpg');
+    background-size: cover;;
+    background-position: center center;
+    z-index: -1;
+    border: 1px solid #494848;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 1px 2px #707070;
+    opacity: 1;
+}
+
+/*-----------------MyName-------------------*/
+#MyName {
+    color: #000;
+    grid-area: 2/2/3/3;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    align-content: space-around;
+    font-family: 'Bree Serif', serif;
+    text-shadow: 0 0 5px #6d7b80;
+}
+
+#MyName a {
+    color: #000;
+    text-shadow: 0 0 5px #6d7b80;
+}
+
+/*-----------------Navbar-------------------*/
+#Navbar {
+    grid-area: 3/2/4/3;
+    background: #485563;
+    background: -webkit-linear-gradient(to right, #29323c, #485563);
+    background: linear-gradient(to right, #29323c, #485563);
+    display: grid;
+    grid-template: 1fr /1fr;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    overflow: hidden;
+}
+
+#Navbar ul {
+    grid-area: 1/1/2/2;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-content: space-around;
+    box-shadow: 1px 1px 2px #707070;
+}
+
+#Navbar li {
+    margin: 0 30px;
+    font-size: 25px;
+}
+
+li:hover i, li:active i {
+    transform: rotate(390deg);
+    transition: all 0.5s ease-in-out;
+}
+
+li p {
+    display: none;
+    margin: 0;
+    color: #4dd5ff;
+    font-weight: bold;
+    font-size: 90%;
+}
+
+li.active i {
+    color: rgb(8, 235, 235);
+    display: none;
+}
+
+li.active p {
+    display: block;
+}
+
+#onWindow {
+    width: 100%;
+    height: 100%;
+    grid-area: 4/2/5/3;
+    margin-top: 0;
+    background-color: #ffffff;
+    border: 0 solid #3e809bcc;
+    box-shadow: 0 0 20px #247075;
+}
+
+@media only screen and (max-width: 1024px) {
+    body {
+        grid-template: 2fr 0.8fr 0.5fr 10fr 0fr/ 1fr 5fr 1fr;
+    }
+
+    #Intro {
+        grid-area: 1/1/2/4;
+    }
+
+    #MyName {
+        grid-area: 2/1/3/4;
+    }
+
+    #background {
+        border-radius: 0;
+    }
+
+    #Navbar {
+        grid-area: 3/1/4/4;
+        font-size: 80%;
+    }
+
+    #Navbar ul {
+        justify-content: space-around;
+    }
+
+    #Navbar li {
+        margin: 0;
+    }
+
+    #onWindow {
+        grid-area: 4/1/5/4;
+    }
+}

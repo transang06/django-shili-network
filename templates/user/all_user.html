@@ -1,0 +1,41 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% block title %}Show Poss{% endblock %}
+{% block scripts %}
+    {% if all_user %}
+        all_user = {{ all_user }}
+    {% endif %}
+{% endblock scripts %}
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+{% block noidung %}
+    <div class="user_follow">
+        <h3>Tất cả người dùng</h3>
+        <template v-if="api_get_all_user.result.length">
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <template v-for="user_item in api_get_all_user.result">
+                    <div class="col">
+                        <div class="card">
+                            <img v-if="user_item.avatar" :src="`/media/${user_item.avatar}`"
+                                 class="avatar_boxFriend"
+                                 :alt="user_item.avatar">
+                            <img v-else src="{% static 'user/images/avatar.png' %}"
+                                 class="avatar_boxFriend"
+                                 alt="avatar">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">[[user_item.full_name]]</h5>
+                                <p @click="open_link(`/profile/${ user_item.username}`)" class="card-text">
+                                    @[[user_item.username]]</p>
+                                <i class="far fa-comment-alt mx-5"></i>
+                                <i @click="add_follow(user_item.id)" class="fas fa-plus mx-5"></i>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </template>
+        <template v-else>
+            <h4>Không có ai trong danh sách này</h4>
+        </template>
+    </div>
+{% endblock noidung %}
+<script src="{% static 'home/javascript/bai_viet.js' %}"></script>

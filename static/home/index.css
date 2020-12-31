@@ -1,0 +1,8 @@
+.baiviet{
+    display: grid;
+    grid-template:  1fr 1fr/10fr 10fr 1fr;
+}
+.comment{
+    display: grid;
+    grid-template:  1fr 0.2fr/1fr;
+}

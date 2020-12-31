@@ -1,0 +1,228 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'images/shili.png' %}" type="image/gif">
+    <title>{% block title %}Trang Chủ{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'fontawesome-free-5.15.1-web/css/all.css' %}">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+    <link rel="stylesheet" href="{% static 'home/css/base.css' %}">
+    <style>
+
+    </style>
+    <script>
+        let domain = window.location.origin;
+        let email = (`{{ user.email }}`);
+        let username, post_id, top3post, all_user, edit_post, hashtag_post, hashtag_top = null;
+        let user_id = (`{{ user.id }}`);
+        {% block scripts %}{% endblock scripts %}
+    </script>
+</head>
+<body>
+<div id="app_Shili" class="container-fluid">
+    <div class="backgroundTop"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-3 col-md-3 col-lg-3">
+                <div class="sticky mt-5">
+                    <div class="d-flex justify-content-around">
+                        {% if user.avatar %}
+                            <img id="avatar" src="{{ user.avatar.url }}" alt="{{ user.avatar.url }}"
+                                 class="mr-3 mt-3 rounded-circle ">
+                        {% else %}
+                            <img id="avatar" src="{% static 'user/images/avatar.png' %}" alt="avatar"
+                                 class="mr-3 mt-3 rounded-circle ">
+                        {% endif %}
+                    </div>
+                    <h3 id="name" class="mt-3"
+                        @click="open_link('/profile/')">{{ user.first_name }} {{ user.last_name }}</h3>
+                    <div class="container-fluid d-flex flex-row flex-wrap justify-content-around">
+                        {% block bar %}
+                        {% endblock bar %}
+                        <i @click="open_link(domain)" class="fas fa-home "></i>
+                        <i @click="open_link('/profile/')" class="fas fa-address-card"></i>
+                        <i @click="open_link(domain+`/profile/alluser/`)" class="fas fa-users"></i>
+                        <i class="fas fa-comment-alt" data-bs-toggle="modal" data-bs-target="#boxchat"></i>
+                        <i class="fas fa-search" data-bs-toggle="modal" data-bs-target="#search"></i>
+                        <i class="fas fa-feather-alt" data-bs-toggle="modal" data-bs-target="#set_post"></i>
+                        <i class="fas fa-hashtag" data-bs-toggle="modal" data-bs-target="#hashtag"></i>
+                        <i @click="open_link(domain+`/logout/`)" class="fas fa-sign-out-alt"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col mt-4">
+                {% block noidung %}
+                {% endblock noidung %}
+            </div>
+        </div>
+        <i @click="scrollToTop" class="fab fa-autoprefixer"></i>
+        <i class="fas fa-comment-alt showChat" data-bs-toggle="modal" data-bs-target="#boxchat"></i>
+        <div id="boxchat" class="modal fixed-left fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-aside" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Kết nối với mọi người</h5>
+                    </div>
+                    <div class="modal-body">
+                        <template v-if="!chat.boxchat_on" v-for="item in api_your_friend.result">
+                            <div @click="chat_box_func(item.id)">
+                                <div class="p-3 row">
+                                    <img v-if="item.avatar" :src="`/media/${item.avatar}`"
+                                         class="col-3  rounded-circle"
+                                         style="width:60px;"
+                                         :alt="item.avatar">
+                                    <img v-else src="{% static 'user/images/avatar.png' %}" alt="avatar"
+                                         class="col-3 rounded-circle" style="width:60px;">
+                                    <h5 class="media-body col-9">[[item.full_name]]</h5>
+                                </div>
+                            </div>
+                        </template>
+                        <template v-if="chat.boxchat_on" v-for="item in chat.boxchat">
+                            <div class="chat_window">
+                                <div class="chat_window_top">
+                                    <img v-if="item.avatar" :src="`/media/${item.avatar}`"
+                                         class="chat_select_avatar"
+                                         :alt="item.avatar">
+                                    <img v-else src="{% static 'user/images/avatar.png' %}"
+                                         class="chat_select_avatar"
+                                         alt="avatar">
+                                    <div>
+                                        <div class="chat_window_top_name">
+                                            <div @click="open_link(domain+`/profile/${item.username}`)">
+                                                [[item.full_name]]
+                                            </div>
+                                        </div>
+                                        <div class="chat_window_top_count">Có [[item.soluongtin]] Tin nhắn trong hội
+                                            thoại này
+                                        </div>
+                                    </div>
+                                    <div @click="show_box_chat"><i class="fas fa-arrow-circle-left fs-5"></i></div>
+                                </div>
+                                <div id="container" class="chat_window_content">
+                                    <template v-for="mess in chat_content">
+                                        <div v-if="mess.from_user_id != user_id" data-bs-toggle="tooltip"
+                                             data-bs-placement="right" :title="mess.created_at"
+                                             class="you">
+                                            <div class="content_chat you_left"> [[ mess.content ]]</div>
+                                        </div>
+                                        <div v-else data-bs-toggle="tooltip" :title="mess.created_at" class="me">
+                                            <div @dblclick="delete_mess_func(mess.m_id,mess.from_user_id)"
+                                                 class="content_chat me_right"> [[ mess.content ]]
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                                <div class="chat_input_group">
+                                    <input type="text" @click="scrollBottom" @keyup.enter="send_mess_func(item.user_id)"
+                                           v-model="chat.input" class="chat_input"
+                                           placeholder="Nhập tin nhắn muốn gửi...">
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="search" class="modal fixed-right fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-aside" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <input class="form-control me-2 modal-title" v-model="search.input"
+                               @keyup.enter="open_link(domain+`/post/hashtag/${search.input.toLowerCase()}`)"
+                               type="search"
+                               placeholder="Tìm kiếm" aria-label="Search">
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="hashtag" class="modal fixed-right fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-aside" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 @click="open_link(domain+`/post/hashtag/`)" class="modal-title">Hashtag nổi bật</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Mỗi bài viết sẽ có duy nhất 1 hashtag, chúng tôi dựa vào số lượng bài viết để
+                            xếp hạng hashtag</p>
+                        <template v-for="hashtag in api_top_hashtag.result">
+                            <li class="list-group-item d-flex justify-content-between align-items-center"
+                                @click="open_link(domain+`/post/hashtag/${hashtag.hashtag.toLowerCase()}`)">
+                                #[[hashtag.hashtag]]
+                                <span>[[hashtag.soluot]] lượt</span>
+                            </li>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="set_post" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content p-5">
+                    <h3 class="mb-3">Tải lên bài viết mới</h3>
+                    <form action="{% url 'post:set_post' %}" enctype="multipart/form-data" method="post">
+                        {% csrf_token %}
+                        <div class="form-floating">
+                            <textarea class="form-control" placeholder="Bạn đang nghĩ điều gì thế" name="content"
+                                      id="floatingTextarea" required></textarea>
+                            <label for="floatingTextarea">Bạn đang nghĩ điều gì thế</label>
+                        </div>
+                        <div class="my-3">
+                            <label for="formFile" class="form-label">Tải lên ảnh cho bài viết</label>
+                            <input name="photo" accept='image/*' class="form-control" type="file" id="formFile">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">#</span>
+                            </div>
+                            <input type="text" name="hashtag" class="form-control" required
+                                   placeholder="Hashtag"
+                                   aria-label="Username" aria-describedby="basic-addon1">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">#</span>
+                            </div>
+                            <select class="form-select" name="public" aria-label="Default select example">
+                                <option selected>Công Khai</option>
+                                <option>Chỉ Mình Tôi</option>
+
+                            </select>
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">#</span>
+                            </div>
+                            <select class="form-select" name="feeling" aria-label="Default select example">
+                                <option selected>Cảm thấy vui sướng</option>
+                                <option>Cảm thấy khá tệ</option>
+                                <option>Cảm thấy thú vị</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-dark">Đăng ngay</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"
+        integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js"
+        integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj"
+        crossorigin="anonymous"></script>
+<script src="{% static 'home/javascript/bai_viet.js' %}"></script>

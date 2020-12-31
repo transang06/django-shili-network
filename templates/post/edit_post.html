@@ -1,0 +1,56 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% block title %}Show Poss{% endblock %}
+{% block scripts %}
+    {% if post_id %}
+        post_id = {{ post_id }}
+    {% endif %}
+{% endblock scripts %}
+{% block noidung %}
+    <div class="container user_follow" v-if="api_one_post">
+        <template v-for="i in api_one_post.result">
+            <h3 class="mb-3">Chỉnh sửa bài viết của bạn</h3>
+            <form class="m-3" action="{% url 'post:edit' post_id %}" enctype="multipart/form-data" method="post">
+                {% csrf_token %}
+                <div class="form-floating">
+                            <textarea class="form-control" placeholder="Bạn đang nghĩ điều gì thế" name="content"
+                                      :value="i.content" id="floatingTextarea" required></textarea>
+                    <label for="floatingTextarea">Thay thế nội dung</label>
+                </div>
+                <div class="my-3">
+                    <label for="formFile" class="form-label">Tải lên ảnh cho bài viết</label>
+                    <input name="photo" accept='image/*' class="form-control" type="file" id="formFile">
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">#</span>
+                    </div>
+                    <input type="text" name="hashtag" :value="i.hashtag" class="form-control" required
+                           placeholder="Hashtag"
+                           aria-label="Username" aria-describedby="basic-addon1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">#</span>
+                    </div>
+                    <select class="form-select" name="public" aria-label="Default select example">
+                        <option selected>[[i.public]]</option>
+                        <option>Công Khai</option>
+                        <option>Chỉ Mình Tôi</option>
+                    </select>
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">#</span>
+                    </div>
+                    <select class="form-select" name="feeling" aria-label="Default select example">
+                        <option selected>[[i.feeling]]</option>
+                        <option>Cảm thấy vui sướng</option>
+                        <option>Cảm thấy khá tệ</option>
+                        <option>Cảm thấy thú vị</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-dark">Đăng ngay</button>
+            </form>
+            <img v-if="i.photo" :alt="i.photo" class="post_image"
+                     :src="`/media/${i.photo}`">
+        </template>
+    </div>
+
+{% endblock noidung %}
