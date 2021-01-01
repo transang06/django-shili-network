@@ -63,9 +63,9 @@ body {
 }
 
 .sticky {
-    /*position: -webkit-sticky;*/
-    /*position: sticky;*/
-    /*top: 50px;*/
+    position: -webkit-sticky;
+    position: sticky;
+    top: 50px;
 }
 
 .sticky i {
@@ -83,6 +83,7 @@ body {
     color: #192841;
     font-size: 55px;
     padding: 10px;
+    background-color:#FFFFFF;
 
 }
 
@@ -123,14 +124,18 @@ body {
     text-overflow: ellipsis;
     text-shadow: 3px 3px 2px #000000;
 }
-
-.fa-autoprefixer {
-    color: #ffffff;
-    font-size: 30px;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
+.textOver{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
+/*.fa-autoprefixer {*/
+/*    color: #ffffff;*/
+/*    font-size: 30px;*/
+/*    position: fixed;*/
+/*    bottom: 20px;*/
+/*    right: 20px;*/
+/*}*/
 
 #boxchat {
     left: 0;

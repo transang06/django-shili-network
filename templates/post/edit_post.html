@@ -1,11 +1,9 @@
 {% extends 'home/base.html' %}
 {% load static %}
 {% block title %}Show Poss{% endblock %}
-{% block scripts %}
-    {% if post_id %}
-        post_id = {{ post_id }}
-    {% endif %}
-{% endblock scripts %}
+{% block data %}
+    <div style="display:none" id="data_post"  post_id="{{ post_id }}"></div>
+{% endblock data %}
 {% block noidung %}
     <div class="container user_follow" v-if="api_one_post">
         <template v-for="i in api_one_post.result">

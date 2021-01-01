@@ -1,19 +1,12 @@
 {% extends 'home/base.html' %}
 {% load static %}
 {% block title %}Trang Cá Nhân{% endblock %}
-{% block scripts %}
-    {% if username %}
-        username = (`{{ username }}`)
-    {% endif %}
-{% endblock scripts %}
-{% block bar %}
-
-{% endblock bar %}
-
+{% block data %}
+    <div style="display:none" id="username" username="{{ username }}"></div>
+{% endblock data %}
 {% block noidung %}
     <div id="profile">
         <template v-for="profile in get_profile.profile">
-
             <div v-if="profile.cover_image" class="backgroundProfile"
                  :style="{ 'background-image': [`url(/media/${profile.cover_image}`]}"></div>
             <div v-else class="backgroundProfile"></div>
@@ -180,7 +173,7 @@
                             <i class="fas fa-birthday-cake"></i>
                             <input type="date" v-model="edit.birthday=profile.birthday">
                         </div>
-                        <small v-show="edit.results">[[edit.results]]</small>
+
                         <div class="container mt-3 btnEdit">
                             <button @click="forgotPass_func(profile.email)" type="button" class="btn btn-secondary"><i
                                     class="far fa-edit"></i> Đổi mật khẩu

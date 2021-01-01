@@ -306,5 +306,5 @@ class Database:
     def soLuongTinCuaBox(self, id_room):
         sql = "SELECT COUNT(m_id) AS SoTin FROM user_conversation a JOIN user_message b ON a.c_id = b.conversation_id WHERE a.c_id =" + str(
             id_room)
-        soluongtin = Message.objects.raw(sql)[:1][0].SoTin
+        soluongtin = Message.objects.raw(sql)[0:1][0].SoTin
         return soluongtin

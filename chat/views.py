@@ -25,7 +25,7 @@ class BoxChat(View):
                     Conv.save()
                 except:
                     return redirect('home:home')
-            soluongtin = database.soLuongTinCuaBox(id_room),
+            soluongtin = database.soLuongTinCuaBox(id_room)
             sql = "SELECT * FROM user_myuser a WHERE a.username ='" + user_2_id + "' OR a.id ='" + user_2_id + "'"
             thong_tin_user_2 = MyUser.objects.raw(sql)
             thislist = []

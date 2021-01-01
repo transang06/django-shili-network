@@ -1,17 +1,10 @@
 {% extends 'home/base.html' %}
 {% load static %}
 {% block title %}Show Poss{% endblock %}
-{% block scripts %}
-    {% if post_id %}
-        post_id= {{ post_id }};
-    {% endif %}
-    {% if top3post %}
-        top3post= {{ top3post }};
-    {% endif %}
-    {% if hashtag_post %}
-        hashtag_post= '{{ hashtag_post }}';
-    {% endif %}
-{% endblock scripts %}
+{% block data %}
+    <div style="display:none" id="data_post" hashtag_post="{{ hashtag_post }}" post_id="{{ post_id }}"
+         top3post="{{ top3post }}"></div>
+{% endblock data %}
 {% block noidung %}
     <div>
         <div v-for="item in api_one_post.result">

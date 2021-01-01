@@ -128,9 +128,9 @@ class ApiEditProfile(View):
                 edit_user.birthday = data['birthday']
             edit_user.intro = data['intro']
             edit_user.save()
-            return HttpResponse("Thay Đổi Thành Công")
+            return HttpResponse("Bạn đã thay đổi thông tin thành công.")
         else:
-            return redirect('home:login')
+            return redirect('Phiên đăng nhập của bạn đã hết hạn vui lòng đăng nhập lại')
 
 
 class Edit_av_bg(View):
@@ -165,7 +165,7 @@ class Add_follow(View):
                 fl.save()
                 return HttpResponse('Follow thành công, hãy tiếp tục theo dõi những người khác')
             else:
-                return HttpResponse('ban da theo doi nguoi nay')
+                return HttpResponse('Có vẻ như bạn đã theo dõi người này, hãy kiểm tra lại nhé.')
 
         else:
             return redirect('home:home')

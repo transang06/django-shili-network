@@ -8,6 +8,7 @@ let index_login = new Vue({
         login_bg: false,
         themes: 'login',
         info: null,
+        domain: window.location.origin,
         login: {
             username: null,
             password: null,
@@ -46,7 +47,7 @@ let index_login = new Vue({
         check__: function () {
             axios({
                 method: 'post',
-                url: 'http://127.0.0.1:8000/check/',
+                url: '/check/',
                 data: {
                     username: this.registerUser.username,
                     email: this.registerUser.email,
@@ -75,7 +76,7 @@ let index_login = new Vue({
         login_func: function () {
             axios({
                 method: 'post',
-                url: 'http://127.0.0.1:8000/login/',
+                url:  '/login/',
                 data: {
                     username: this.login.username.toLowerCase(),
                     password: this.login.password,
@@ -83,14 +84,14 @@ let index_login = new Vue({
             }).then(response => {
                 this.login.resultMess = response.data;
                 if (this.login.resultMess === 'success') {
-                    window.location.href = 'http://127.0.0.1:8000';
+                    window.location.href = this.domain ;
                 }
             })
         },
         forgotPass_func: function () {
             axios({
                 method: 'post',
-                url: 'http://127.0.0.1:8000/sendpass/',
+                url: this.domain +'/sendpass/',
                 data: {
                     email: this.forgotPass.email,
                 },
@@ -104,7 +105,7 @@ let index_login = new Vue({
         register_func: function () {
             axios({
                 method: 'post',
-                url: 'http://127.0.0.1:8000/register/',
+                url: this.domain +'/register/',
                 data: {
                     firstname: this.registerUser.firstname,
                     lastname: this.registerUser.lastname,

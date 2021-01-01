@@ -1,14 +1,21 @@
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
 
-
 let home = new Vue({
     el: '#app_Shili',
     delimiters: ['[[', ']]'],
     data() {
         return {
-            email: email,
-            domain: domain,
+            domain: window.location.origin,
+            user_id: $("#data").attr("user_id"),
+            email: $("#data").attr("email"),
+            username: $("#username").attr("username"),
+            all_user: $("#all_user").attr("all_user"),
+            post_id: $("#data_post").attr("post_id"),
+            hashtag_post: $("#data_post").attr("hashtag_post"),
+            top3post: $("#data_post").attr("top3post"),
+
+
             api_one_post: {},
             get_profile: {},
             api_get_all_user: {},
@@ -16,10 +23,13 @@ let home = new Vue({
             api_top_hashtag: {},
             api_your_friend: {},
             api_post: {},
-            join_mess: '',
 
-
+            search: null,
+            thongBao: false,
             themes: 'thongtin',
+
+
+
             edit: {
                 first_name: '',
                 first_name1: '',
@@ -29,27 +39,22 @@ let home = new Vue({
                 address: '',
                 gender: '',
                 birthday: '',
-                results: '',
+
             },
             edit_av_bg: {
                 avatar: '',
                 cover_image: '',
                 results: '',
             },
-
-
             show_page: 'home',
-
-
             form_edit_post: false,
             show_sl: false,
-
             chat_content: {},
             run_Interval_chat: null,
             run_Interval_cmt: null,
 
-            user_id: user_id,
-            api_edit_post: {},
+
+
             chat: {
                 input: null,
                 input1: null,
@@ -62,15 +67,7 @@ let home = new Vue({
                 content_input1: {},
                 comment_show: {}
             },
-            friends: {
-                top: {},
-                all: {},
-                join_mess: null,
-            },
-            search: {
-                input: null,
-                results: {},
-            },
+
 
         }
     },
@@ -78,24 +75,30 @@ let home = new Vue({
         this.get_api_top_friend;
         this.get_api_top_hashtag;
         this.get_api_post;
-        if (username) {
+        if (this.username) {
             this.get_profile_func
         }
-        if (post_id) {
+        if (this.post_id) {
             this.api_one_post_func;
         }
-        if (top3post) {
+        if (this.top3post) {
             this.api_top3_hashtag_post;
         }
-        if (all_user) {
+        if (this.all_user) {
             this.api_get_all_user_func;
         }
-        if (hashtag_post) {
+        if (this.hashtag_post) {
             this.api_hashtag_post_func;
         }
         this.get_api_your_friend;
 
 
+    },
+    watch: {
+        // whenever question changes, this function will run
+        thongBao: function () {
+            setTimeout(() => this.thongBao = false, 3000)
+        }
     },
     computed: {
         get_profile_func: function () {
@@ -103,7 +106,7 @@ let home = new Vue({
                 method: 'post',
                 url: '/profile/api/getprofile/',
                 data: {
-                    username: username
+                    username: this.username
                 },
             }).then(response => {
                 this.get_profile = response.data;
@@ -144,7 +147,7 @@ let home = new Vue({
         api_one_post_func: function () {
             axios({
                 method: 'post',
-                url: "/post/" + post_id + '/',
+                url: "/post/" + this.post_id + '/',
             }).then(response => {
                 this.api_one_post = response.data;
             })
@@ -160,9 +163,9 @@ let home = new Vue({
         api_hashtag_post_func: function () {
             axios({
                 method: 'post',
-                url: "/post/hashtag/" + hashtag_post,
+                url: "/post/hashtag/" + this.hashtag_post,
                 data: {
-                    hashtag: hashtag_post,
+                    hashtag: this.hashtag_post,
                 },
             }).then(response => {
                 this.api_one_post = response.data;
@@ -180,20 +183,11 @@ let home = new Vue({
 
     },
 
-    watch: {
-        join_mess: {
-            handler: function () {
-
-                console.log(1)
-
-            },
-        }
-    },
 
     methods: {
-         scrollToTop() {
-                window.scrollTo(0,0);
-           },
+        scrollToTop() {
+            window.scrollTo(0, 0);
+        },
         edit_profile: function () {
             axios({
                 method: 'post',
@@ -209,7 +203,7 @@ let home = new Vue({
                 },
             }).then(response => {
                 this.get_profile_fun;
-                this.edit.results = response.data;
+                this.thongBao = response.data;
             })
         },
         forgotPass_func: function (email) {
@@ -221,11 +215,11 @@ let home = new Vue({
                         email: email,
                     },
                 }).then(response => {
-                    this.edit.results = response.data;
+                    this.thongBao = response.data;
 
                 })
             } else {
-                return this.forgotPass.resultMess = 'bạn không phải chủ tài khoản này';
+                return this.thongBao = 'Bạn không phải chủ tài khoản này';
             }
         },
         delete_post: function (post_id) {
@@ -262,7 +256,8 @@ let home = new Vue({
                     id: friends_id,
                 },
             }).then(response => {
-                this.join_mess = response.data;
+                this.thongBao = response.data;
+
 
             })
         },

@@ -1,11 +1,8 @@
 {% extends 'home/base.html' %}
 {% load static %}
-{% block title %}Show Poss{% endblock %}
-{% block scripts %}
-    {% if all_user %}
-        all_user = {{ all_user }}
-    {% endif %}
-{% endblock scripts %}
+{% block title %}Show Poss{% endblock %}{% block data %}
+    <div style="display:none" id="all_user" all_user="{{ all_user }}"></div>
+{% endblock data %}
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
 {% block noidung %}
     <div class="user_follow">
