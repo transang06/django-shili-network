@@ -13,7 +13,7 @@ urlpatterns = [
     path('api/getprofile/', views.ApiGetProfile.as_view(), name='api_getprofile'),
     path('api/editprofile/', views.ApiEditProfile.as_view(), name='edit_profile'),
     path('api/editavbg/', views.Edit_av_bg.as_view(), name='edit_av_bg'),
-    path('api/top_friend/', views.TopFriend.as_view(), name='api_top_friend'),
+
     path('api/your_friend/', views.ApiYourFriend.as_view(), name='api_your_friend'),
 
 ]

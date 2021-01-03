@@ -1,9 +1,10 @@
 {% extends 'home/base.html' %}
 {% load static %}
-{% block title %}Trang Cá Nhân{% endblock %}
+{% block title %}Trang cá nhân của {{ username }}{% endblock %}
 {% block data %}
     <div style="display:none" id="username" username="{{ username }}"></div>
 {% endblock data %}
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
 {% block noidung %}
     <div id="profile">
         <template v-for="profile in get_profile.profile">
@@ -44,11 +45,13 @@
                                          class="avatar_boxFriend"
                                          alt="avatar">
                                     <div class="card-body text-center">
-                                        <h5 class="card-title">[[user_item.full_name]]</h5>
+                                        <h5 @click="open_link(`/profile/${ user_item.username}`)" class="card-title">
+                                            [[user_item.full_name]]</h5>
                                         <p @click="open_link(`/profile/${ user_item.username}`)" class="card-text">
                                             @[[user_item.username]]</p>
-                                        <i class="far fa-comment-alt mx-5"></i>
-                                        <i @click="add_follow(user_item.id)" class="fas fa-plus mx-5"></i>
+                                        <i @click="chat_box_func(user_item.id)" data-bs-toggle="modal"
+                                           data-bs-target="#boxchat" class="far fa-comment-alt mx-2"></i>
+                                        <i @click="add_follow(user_item.id)" class="fas fa-plus mx-2"></i>
                                     </div>
                                 </div>
                             </div>
@@ -133,7 +136,6 @@
                     </div>
                 {% endif %}
             </div>
-
             {% if username ==  user.username %}
                 <template v-if="themes==='suathongtin'">
                     <div class="user_follow">
@@ -182,8 +184,6 @@
                                     class="fas fa-save"></i> Lưu thay đổi
                             </button>
                         </div>
-
-
                     </div>
                 </template>
                 <template v-if="themes==='editCoverImage'">
@@ -208,66 +208,64 @@
                         </form>
                     </div>
                 </template>
-
-
             {% endif %}
-
             <div class="user_follow" v-if="themes==='profile'">
-
-                <template v-for="(item) in get_profile.profile_posts">
-                    <div class="baidang">
+                <template v-for="item in get_profile.profile_posts">
+                    <div class="baidang mb-5">
                         <div class="post_thongtin">
-                            <img v-if="item.avatar" :src="`/media/${item.avatar}`"
-                                 class="post_avatar"
+                            <img v-if="item.avatar" :src="`/media/${item.avatar}`" class="post_avatar"
                                  :alt="item.avatar" alt="">
-                            <img v-else src="{% static 'user/images/avatar.png' %}"
-                                 class="post_avatar" alt="">
+                            <img v-else src="{% static 'user/images/avatar.png' %}" class="post_avatar"
+                                 alt="">
                             <div>
-
                                 <div>
-                                    <span class="post_name" @click="open_link(`/profile/${ item.username}`)">
-                                        [[item.full_name]]</span>
+                                    <a class="post_name"
+                                       :href="`http://127.0.0.1:8000/profile/${item.username}`">[[item.full_name]]</a>
                                     <label class="post_feeling"><i
-                                            class="fas fa-check-circle"></i>
-                                        [[item.feeling]]</label>
+                                            class="fas fa-check-circle"></i> [[item.feeling]]</label>
                                 </div>
                                 <div>
-                                    <a class="post_time"
-                                       href="">[[item.created_at]] </a>
+                                        <span class="post_time"
+                                              @click="open_link(domain+`/post/${item.post_id}/`)"
+
+                                        >[[item.created_at]] </span>
                                     <label class="post_public"><i
-                                            class="fas fa-globe-europe"> </i>
-                                        [[item.public]]</label>
+                                            class="fas fa-globe-europe"> </i> [[item.public]]</label>
                                 </div>
                             </div>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-light dropdown-toggle"
-                                        data-toggle="dropdown"
-                                        aria-haspopup="true" aria-expanded="false">
+                            <div class="dropdown" v-if="user_id == item.user_id">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
                                 </button>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    {% if post.user_id == user.id %}
-                                        <a class="dropdown-item" href="">Sửa</a>
-                                        <a class="dropdown-item" href="">Xóa</a>
-                                    {% else %}
-                                        <a class="dropdown-item">Đây không phải bài viết của bạn</a>
-                                    {% endif %}
-                                </div>
+                                <ul class="dropdown-menu dropdown-menu-end  dropdown-menu-dark "
+                                    aria-labelledby="dropdownMenuButton">
+                                    <li @click="open_link(domain+`/post/edit/${item.post_id}/`)"><a
+                                            class="dropdown-item" href="#">Chỉnh
+                                        sửa bài viết</a></li>
+                                    <li @click="delete_post(item.post_id)"><a class="dropdown-item" href="#">Xóa bài
+                                        viết này</a>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                         <div class="post_content">[[item.content]]</div>
                         <div class="post_hashtag">
-                            <a href=""><i class="fas fa-hashtag"></i>[[item.hashtag]]</a>
+                            <div @click="open_link(domain+`/post/hashtag/${item.hashtag.toLowerCase()}`)">
+                                <i class="fas fa-hashtag"></i>[[item.hashtag]]
+                            </div>
                         </div>
-
-                        <img class="post_image" v-if="item.photo" :src="`/media/${item.photo}`">
-
+                        <img v-if="item.photo" :src="`/media/${item.photo}`" class="post_image"
+                             :alt="item.photo" alt="">
                         <template v-for="cmt in comment.comment_show[`${item.post_id}`]">
                             <template v-for="key in cmt">
                                 <div class="comment">
                                     <div>
-                                        <span class="comment_name"
-                                              @click="openlink(`/profile/${ key.username}`)">[[key.fullname]]</span>
-                                        <span class="comment_created"><i class="fas fa-clock"></i> [[key.created_at]]
+                                    <span class="comment_name"
+                                          @click="open_link(`/profile/${ key.username}`)">
+                                        [[key.fullname]]
+                                       </span>
+                                        <span class="comment_created"><i
+                                                class="fas fa-clock"></i> [[key.created_at]]
                                     </span>
                                     </div>
                                     <div class="comment_content">[[key.content]]</div>
@@ -279,27 +277,17 @@
                             </template>
                         </template>
                         <div class="form-comment">
-
-                            <input type="hidden"
-                                   v-model="comment.content_input1[`${item.post_id}`]">
+                            <input type="hidden" v-model="comment.content_input1[`${item.post_id}`]">
                             <input type="text" v-model="comment.content_input[`${item.post_id}`]"
                                    @keyup.enter="comment_func(item.post_id)"
                                    class="form-control"
                                    placeholder="Để lại bình luận của bạn">
-                            <button class="btn btn-dark" @click="comment_show_func(item.post_id)">Show cmt</button>
+                            <button class="btn btn-dark" @click="comment_show_func(item.post_id)">show cmt</button>
                         </div>
-
                     </div>
-                    <hr>
                 </template>
-
             </div>
         </template>
     </div>
-
-
-
-
-
-
 {% endblock noidung %}
+<script src="{% static 'home/javascript/bai_viet.js' %}"></script>

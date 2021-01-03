@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+
 from django.core.mail import send_mail
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
@@ -14,9 +15,8 @@ from user.models import MyUser
 class Index(View):
     def get(self, request):
         if request.user.is_authenticated:
-            database = Database(request.user.id)
-            context = database.get_database_index()
-            return render(request, 'home/home.html', context)
+            return render(request, 'home/home.html', {'page': 'Trang chủ Shili'})
+
         else:
             return render(request, 'home/index.html')
 
@@ -42,11 +42,6 @@ class Index(View):
             new_post.public = public
             new_post.user = request.user
             new_post.save()
-            messages = "Bạn vừa đăng thành công bài viết. Hãy tiếp tục sử  trải nghệm"
-
-            context = {
-                'messages': messages
-            }
             return redirect('home:home')
 
 
@@ -96,12 +91,16 @@ class Register_user(View):
             new_user.save()
             new_user = MyUser.objects.filter(username=data['username'])
             if new_user:
-                data = "Hello"
+                mail_content = "Hello"
+                mail_title = "Welcome to Shili!"
                 one_time_pad = MaHoaOneTimePad()
                 result = one_time_pad.ma_hoa(email)
-                theme = ShiliEmail(result[0], result[1], email)
-                msg_html = theme.xac_thuc()
-                send_mail('Welcome to Shili!', data, "PLC", [email], html_message=msg_html, fail_silently=False)
+                domain = request.scheme + '://' + request.META['HTTP_HOST']
+                url = domain + '/xacthuc/' + result[0] + '/' + result[1]
+                content = "Nhấp vào đây để Xác thực tài khoản của bạn"
+                theme = ShiliEmail()
+                msg_html = theme.form_mail(url, content, email)
+                send_mail(mail_title, mail_content, "PLC", [email], html_message=msg_html, fail_silently=False)
                 return HttpResponse('Đăng kí thành công tài khoản. Kiểm tra email để nhận liên kết kích hoạt tài khoản')
             else:
                 return HttpResponse('Có lỗi xảy ra! Vui lòng thử lại')
@@ -113,9 +112,14 @@ class Send_pass(View):
         email = data['email']
         one_time_pad = MaHoaOneTimePad()
         result = one_time_pad.ma_hoa(email)
-        theme = ShiliEmail(result[0], result[1], email)
-        msg_html = theme.reset_password()
-        send_mail('Shili! Đặt lại mật khẩu', 'Hello', "PLC", [email], html_message=msg_html, fail_silently=False)
+        mail_content = "Hello"
+        mail_title = "Shili! Đặt lại mật khẩu"
+        domain = request.scheme + '://' + request.META['HTTP_HOST']
+        url = domain + '/resetpassword/' + result[0] + '/' + result[1]
+        content = "Nhấp  vào đây để đặt lại mật khẩu  của bạn"
+        theme = ShiliEmail()
+        msg_html = theme.form_mail(url, content, email)
+        send_mail(mail_title, mail_content, "PLC", [email], html_message=msg_html, fail_silently=False)
         return HttpResponse('Kiểm tra email để lấy liên kết đến trang thay đổi mật khẩu')
 
 
@@ -164,12 +168,12 @@ class Check(View):
         email = data['email']
         try:
             MyUser.objects.get(username=username)
-            return HttpResponse('trùng username')
+            return HttpResponse('Username đã tồn tại trong hệ thống  vui lòng thử username mới')
         except:
             pass
         try:
             MyUser.objects.get(email=email)
-            return HttpResponse('trùng email')
+            return HttpResponse('Địa chỉ email đã tồn tại trong hệ thống, hãy thử email khác')
         except:
             pass
         return HttpResponse('')
@@ -178,24 +182,8 @@ class Check(View):
 class ApiGetContent(View):
     def post(self, request):
         if request.user.is_authenticated:
-            sql_post_follow = "SELECT * FROM post_post a JOIN user_myuser b ON a.user_id =  b.id WHERE a.user_id IN(SELECT followres_id FROM user_follower WHERE main_user_id = " + str(
-                request.user.id) + ") OR a.user_id = " + str(request.user.id) + "  ORDER BY a.created_at DESC"
-            get_post_follow = Post.objects.raw(sql_post_follow)
-            post_follow = []
-            for i in get_post_follow:
-                thisdict = {}
-                thisdict["post_id"] = i.post
-                thisdict["username"] = i.username
-                thisdict["full_name"] = i.first_name + " " + i.last_name
-                thisdict["feeling"] = i.feeling
-                thisdict["avatar"] = str(i.avatar)
-                thisdict["photo"] = str(i.photo)
-                thisdict["created_at"] = i.created_at
-                thisdict["public"] = i.public
-                thisdict["content"] = i.content
-                thisdict["hashtag"] = i.hashtag
-                thisdict["user_id"] = i.user_id
-                post_follow.append(thisdict)
-            return JsonResponse({'result': post_follow})
+            database = Database(request.user.id)
+            get_post_index = database.json_post(database.get_post_index())
+            return JsonResponse({'result': get_post_index})
         else:
             return redirect('home:home')

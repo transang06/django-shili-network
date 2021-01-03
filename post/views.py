@@ -11,31 +11,16 @@ from post.models import Comment, Post
 class ShowPost(View):
     def get(self, request, post_id):
         if request.user.is_authenticated:
-            return render(request, 'post/return_post.html', {'post_id': post_id})
+            return render(request, 'home/home.html', {'post_id': post_id, 'page': 'Bài viết với ID là'})
         else:
             return redirect('home:home')
 
     def post(self, request, post_id):
         if request.user.is_authenticated:
-            sql = "SELECT * FROM post_post a JOIN user_myuser b ON a.user_id =  b.id WHERE post =" + str(
-                post_id)
-            Top = Post.objects.raw(sql)
-            thislist = []
-            for i in Top:
-                thisdict = {}
-                thisdict["post_id"] = i.post
-                thisdict["username"] = i.username
-                thisdict["full_name"] = i.first_name + i.last_name
-                thisdict["feeling"] = i.feeling
-                thisdict["created_at"] = i.created_at
-                thisdict["public"] = i.public
-                thisdict["content"] = i.content
-                thisdict["hashtag"] = i.hashtag
-                thisdict["user_id"] = i.user_id
-                thisdict["avatar"] = str(i.avatar)
-                thisdict["photo"] = str(i.photo)
-                thislist.append(thisdict)
-            return JsonResponse({'result': thislist})
+            database = Database(request.user.id)
+            get_post_id = database.get_post_id(post_id)
+            posts = database.json_post(get_post_id)
+            return JsonResponse({'result': posts})
         else:
             return redirect('home:login')
 
@@ -43,43 +28,21 @@ class ShowPost(View):
 class TopHashtagPost(View):
     def get(self, request):
         if request.user.is_authenticated:
-            return render(request, 'post/return_post.html', {'top3post': 1})
+            return render(request, 'home/home.html', {'page': 'Các bài viết nổi bật trong tuần'})
         else:
             return redirect('home:home')
 
     def post(self, request):
         if request.user.is_authenticated:
-            sql = "SELECT * FROM post_post a JOIN user_myuser b ON a.user_id =  b.id JOIN( SELECT hashtag,count(hashtag) AS SoLuot FROM post_post GROUP BY hashtag  ORDER BY SoLuot DESC LIMIT 3) c ON a.hashtag =c.hashtag"
-            Top = Post.objects.raw(sql)
-            thislist = []
-            for i in Top:
-                thisdict = {}
-                thisdict["post_id"] = i.post
-                thisdict["username"] = i.username
-                thisdict["full_name"] = i.first_name + i.last_name
-                thisdict["feeling"] = i.feeling
-                thisdict["created_at"] = i.created_at
-                thisdict["public"] = i.public
-                thisdict["content"] = i.content
-                thisdict["hashtag"] = i.hashtag
-                thisdict["user_id"] = i.user_id
-                thisdict["avatar"] = str(i.avatar)
-                thisdict["photo"] = str(i.photo)
-                thislist.append(thisdict)
-            return JsonResponse({'result': thislist})
+            database = Database(request.user.id)
+            get_post_in_top_x_hashtag = database.get_post_in_top_x_hashtag(str(3))
+            posts = database.json_post(get_post_in_top_x_hashtag)
+            return JsonResponse({'result': posts})
         else:
             return redirect('home:login')
 
 
-
-
 class SetPost(View):
-    def get(self, request):
-        if request.user.is_authenticated:
-            return render(request, 'post/set_post.html')
-        else:
-            return redirect('home:home')
-
     def post(self, request):
         if request.user.is_authenticated:
             content = request.POST.get('content')
@@ -101,15 +64,15 @@ class SetPost(View):
             new_post.public = public
             new_post.user = request.user
             new_post.save()
-            sql = 'SELECT post From user_myuser a JOIN post_post b on a.id =  b.user_id ORDER BY created_at DESC LIMIT 1'
-            post_id = Post.objects.raw(sql)[0].post
+            database = Database(request.user.id)
+            post_id = database.get_id_new_post()
             return redirect('post:ShowPost', post_id)
 
 
 class EditPost(View):
     def get(self, request, post_id):
         if request.user.is_authenticated:
-            return render(request, 'post/edit_post.html', {'post_id': post_id})
+            return render(request, 'post/edit_post.html', {'post_id': post_id, 'page': 'Bài viết với ID là'})
         else:
             return redirect('home:home')
 
@@ -126,7 +89,6 @@ class EditPost(View):
                 get_post.hashtag = request.POST.get('hashtag').upper()
                 get_post.feeling = request.POST.get('feeling')
                 get_post.public = request.POST.get('public')
-
                 get_post.save()
             return redirect('post:ShowPost', post_id)
         else:
@@ -146,35 +108,19 @@ class DeletePost(View):
             return HttpResponse('Tài khoản chưa đăng nhập')
 
 
-
 class ApiHashtag(View):
     def get(self, request, hashtag):
         if request.user.is_authenticated:
-            return render(request, 'post/return_post.html', {'hashtag_post': hashtag})
+            return render(request, 'home/home.html', {'hashtag_post': hashtag, 'page': 'Bài viết với Hashtag'})
         else:
             return redirect('home:home')
 
     def post(self, request, hashtag):
         if request.user.is_authenticated:
-            sql = "SELECT * FROM post_post a JOIN user_myuser b ON a.user_id =  b.id WHERE a.hashtag like '%" + str(
-                hashtag).upper() + "%'"
-            Top = Post.objects.raw(sql)
-            thislist = []
-            for i in Top:
-                thisdict = {}
-                thisdict["post_id"] = i.post
-                thisdict["username"] = i.username
-                thisdict["full_name"] = i.first_name + i.last_name
-                thisdict["feeling"] = i.feeling
-                thisdict["created_at"] = i.created_at
-                thisdict["public"] = i.public
-                thisdict["content"] = i.content
-                thisdict["hashtag"] = i.hashtag
-                thisdict["user_id"] = i.user_id
-                thisdict["avatar"] = str(i.avatar)
-                thisdict["photo"] = str(i.photo)
-                thislist.append(thisdict)
-            return JsonResponse({'result': thislist})
+            database = Database(request.user.id)
+            get_post_hashtag = database.get_post_hashtag(hashtag.upper())
+            posts = database.json_post(get_post_hashtag)
+            return JsonResponse({'result': posts})
         else:
             return redirect('home:login')
 
@@ -182,15 +128,9 @@ class ApiHashtag(View):
 class ApiTopHashtag(View):
     def post(self, request):
         if request.user.is_authenticated:
-            sql = "SELECT  hashtag,count(hashtag) AS soluot FROM post_post GROUP BY hashtag  ORDER BY SoLuot DESC"
-            Top = Post.objects.raw(sql)[0:3]
-            thislist = []
-            for i in Top:
-                thisdict = {}
-                thisdict["hashtag"] = i.hashtag
-                thisdict["soluot"] = i.soluot
-                thislist.append(thisdict)
-            return JsonResponse({'result': thislist})
+            database = Database(request.user.id)
+            get_count_top_x_hashtag = database.get_count_top_x_hashtag(3)
+            return JsonResponse({'result': get_count_top_x_hashtag})
         else:
             return redirect('home:login')
 
@@ -205,24 +145,11 @@ class Comment_post(View):
                 new_cm.user_id = request.user.id
                 new_cm.post_id = data['post_id']
                 new_cm.save()
-
         except:
             pass
-
-        sql = "SELECT * FROM post_comment a JOIN user_myuser b ON  a.user_id = b.id WHERE a.post_id =" + str(
-            data['post_id'])
-        Top = Post.objects.raw(sql)
-        thislist = []
-        for i in Top:
-            thisdict = {}
-            thisdict["content"] = i.content
-            thisdict["user_id"] = i.user_id
-            thisdict["username"] = i.username
-            thisdict["comment_id"] = i.comment
-            thisdict["fullname"] = i.first_name + i.last_name
-            thisdict["created_at"] = i.created_at
-            thislist.append(thisdict)
-        return JsonResponse({'result': thislist})
+        database = Database(request.user.id)
+        get_comment_post_id = database.get_comment_post_id(data['post_id'])
+        return JsonResponse({'result': get_comment_post_id})
 
 
 class Delete_comment(View):
@@ -232,45 +159,7 @@ class Delete_comment(View):
             get_comment = Comment.objects.get(comment=data['comment_id'])
             if get_comment.user == request.user:
                 get_comment.delete()
-            sql = "SELECT * FROM post_comment a JOIN user_myuser b ON  a.user_id = b.id WHERE a.post_id =" + str(
-                data['post_id'])
-            Top = Post.objects.raw(sql)
-            thislist = []
-            for i in Top:
-                thisdict = {}
-                thisdict["content"] = i.content
-                thisdict["user_id"] = i.user_id
-                thisdict["comment_id"] = i.comment
-                thisdict["fullname"] = i.first_name + i.last_name
-                thisdict["created_at"] = i.created_at
-                thislist.append(thisdict)
-            return JsonResponse({'result': thislist})
+                return HttpResponse('Bạn vừa xóa thành công bình luận của mình')
+            return HttpResponse('Bạn không thể xóa bình luận của người khác')
         else:
-            return HttpResponse('Tài khoản chưa đăng nhập')
-
-
-# class Search(View):
-#     def post(self, request):
-#         if request.user.is_authenticated:
-#             data = json.loads(request.body.decode('utf-8'))
-#             sql = "SELECT * FROM post_post a JOIN user_myuser b ON a.user_id =  b.id WHERE a.hashtag like '%" + data[
-#                 'key'].upper() + "%'"
-#             Top = Post.objects.raw(sql)
-#             thislist = []
-#             for i in Top:
-#                 thisdict = {}
-#                 thisdict["post_id"] = i.post
-#                 thisdict["username"] = i.username
-#                 thisdict["full_name"] = i.first_name + i.last_name
-#                 thisdict["feeling"] = i.feeling
-#                 thisdict["created_at"] = i.created_at
-#                 thisdict["public"] = i.public
-#                 thisdict["content"] = i.content
-#                 thisdict["hashtag"] = i.hashtag
-#                 thisdict["user_id"] = i.user_id
-#                 thisdict["avatar"] = str(i.avatar)
-#                 thisdict["photo"] = str(i.photo)
-#                 thislist.append(thisdict)
-#             return JsonResponse({'result': thislist})
-#         else:
-#             return redirect('home:login')
+            return HttpResponse('Phiên đăng nhập  này đã hết hạn. vui lòng đăng nhập lại')

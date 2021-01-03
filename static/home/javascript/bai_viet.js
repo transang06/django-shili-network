@@ -7,29 +7,20 @@ let home = new Vue({
     data() {
         return {
             domain: window.location.origin,
+            page: $("#data").attr("page"),
             user_id: $("#data").attr("user_id"),
             email: $("#data").attr("email"),
             username: $("#username").attr("username"),
-            all_user: $("#all_user").attr("all_user"),
             post_id: $("#data_post").attr("post_id"),
             hashtag_post: $("#data_post").attr("hashtag_post"),
-            top3post: $("#data_post").attr("top3post"),
-
-
-            api_one_post: {},
             get_profile: {},
             api_get_all_user: {},
-            api_top_friend: {},
             api_top_hashtag: {},
             api_your_friend: {},
             api_post: {},
-
             search: null,
             thongBao: false,
             themes: 'thongtin',
-
-
-
             edit: {
                 first_name: '',
                 first_name1: '',
@@ -39,22 +30,15 @@ let home = new Vue({
                 address: '',
                 gender: '',
                 birthday: '',
-
             },
             edit_av_bg: {
                 avatar: '',
                 cover_image: '',
                 results: '',
             },
-            show_page: 'home',
-            form_edit_post: false,
-            show_sl: false,
             chat_content: {},
             run_Interval_chat: null,
-            run_Interval_cmt: null,
-
-
-
+            run_Interval_cmt: false,
             chat: {
                 input: null,
                 input1: null,
@@ -72,32 +56,34 @@ let home = new Vue({
         }
     },
     created: function () {
-        this.get_api_top_friend;
         this.get_api_top_hashtag;
-        this.get_api_post;
-        if (this.username) {
-            this.get_profile_func
-        }
-        if (this.post_id) {
-            this.api_one_post_func;
-        }
-        if (this.top3post) {
-            this.api_top3_hashtag_post;
-        }
-        if (this.all_user) {
-            this.api_get_all_user_func;
-        }
-        if (this.hashtag_post) {
-            this.api_hashtag_post_func;
-        }
         this.get_api_your_friend;
+        switch (this.page) {
+            case 'Trang chủ Shili':
+                this.get_api_post;
+                break;
+            case 'Bài viết với ID là':
+                this.api_one_post_func;
+                break;
+            case 'Các bài viết nổi bật trong tuần':
+                this.api_top3_hashtag_post;
+                break;
+            case 'Bài viết với Hashtag':
+                this.api_hashtag_post_func;
+                break;
+            case 'profile':
+                this.get_profile_func;
+                break;
+            case 'all_user':
+                this.api_get_all_user_func;
+                break;
+        }
 
 
     },
     watch: {
-        // whenever question changes, this function will run
         thongBao: function () {
-            setTimeout(() => this.thongBao = false, 3000)
+            setTimeout(() => this.thongBao = false, 5000)
         }
     },
     computed: {
@@ -120,14 +106,7 @@ let home = new Vue({
                 return this.api_post = response.data;
             })
         },
-        get_api_top_friend: function () {
-            axios({
-                method: 'post',
-                url: '/profile/api/top_friend/',
-            }).then(response => {
-                return this.api_top_friend = response.data;
-            })
-        },
+
         get_api_top_hashtag: function () {
             axios({
                 method: 'post',
@@ -149,7 +128,7 @@ let home = new Vue({
                 method: 'post',
                 url: "/post/" + this.post_id + '/',
             }).then(response => {
-                this.api_one_post = response.data;
+                this.api_post = response.data;
             })
         },
         api_top3_hashtag_post: function () {
@@ -157,7 +136,7 @@ let home = new Vue({
                 method: 'post',
                 url: "/post/",
             }).then(response => {
-                this.api_one_post = response.data;
+                this.api_post = response.data;
             })
         },
         api_hashtag_post_func: function () {
@@ -168,7 +147,7 @@ let home = new Vue({
                     hashtag: this.hashtag_post,
                 },
             }).then(response => {
-                this.api_one_post = response.data;
+                this.api_post = response.data;
             })
         },
 
@@ -202,7 +181,7 @@ let home = new Vue({
                     birthday: this.edit.birthday,
                 },
             }).then(response => {
-                this.get_profile_fun;
+                this.get_profile_func;
                 this.thongBao = response.data;
             })
         },
@@ -245,7 +224,7 @@ let home = new Vue({
                     'Content-Type': 'multipart/form-data'
                 }
             }).then(response => {
-                profile.get_profile_fun;
+                this.get_profile_func;
             })
         },
         add_follow: function (friends_id) {
@@ -274,25 +253,29 @@ let home = new Vue({
                 return home.comment.comment_show[`${post_id}`] = response.data;
             })
         },
+        get_cmt: function (post_id) {
+            axios({
+                method: 'post',
+                url: '/post/comments/',
+                data: {
+                    post_id: `${post_id}`,
+                },
+            }).then(response => {
+                home.comment.comment_show[`${post_id}`] = response.data;
+                home.comment.content_input1 = {}
+            })
+        },
         comment_show_func: function (post_id) {
-            this.run_Interval_cmt = setInterval(function () {
-                axios({
-                    method: 'post',
-                    url: '/post/comments/',
-                    data: {
-                        post_id: `${post_id}`,
-                    },
-                }).then(response => {
-                    home.comment.comment_show[`${post_id}`] = response.data;
-                    home.comment.content_input1 = {}
-                })
-            }, 1000);
             if (this.comment.comment_show[`${post_id}`]) {
                 delete this.comment.comment_show[`${post_id}`];
-                clearInterval(this.run_Interval_cmt);
-                return this.comment.content_input1 = {};
+                home.comment.content_input1 = {}
+                clearInterval(this.run_Interval_cmt)
+            } else {
+                this.get_cmt(post_id)
+                this.run_Interval_cmt = setInterval(function () {
+                    home.get_cmt(post_id)
+                }, 1000);
             }
-
         }
         ,
         comment_delete_func: function (post_id, comment_id) {
@@ -304,22 +287,20 @@ let home = new Vue({
                     comment_id: comment_id,
                 },
             }).then(response => {
-                home.comment.content_input1 = {};
-                return home.comment.comment_show[`${post_id}`] = response.data;
+                this.thongBao = response.data;
+                return this.get_cmt()
             })
         },
         get_mess_content: function (user_2_id) {
-            this.run_Interval_chat = setInterval(function () {
-                axios({
-                    method: 'post',
-                    url: "/chat/",
-                    data: {
-                        user_2_id: user_2_id,
-                    },
-                }).then(response => {
-                    home.chat_content = response.data['mess_content'];
-                })
-            }, 500);
+            axios({
+                method: 'post',
+                url: "/chat/",
+                data: {
+                    user_2_id: user_2_id,
+                },
+            }).then(response => {
+                home.chat_content = response.data['mess_content'];
+            })
         },
         show_box_chat: function () {
             home.chat.boxchat_on = false;
@@ -327,8 +308,10 @@ let home = new Vue({
         },
         chat_box_func: function (user_2_id) {
             home.chat.boxchat_on = true;
-            clearInterval(this.run_Interval_chat);
-            this.get_mess_content(user_2_id);
+            home.get_mess_content(user_2_id);
+            this.run_Interval_chat = setInterval(function () {
+                home.get_mess_content(user_2_id);
+            }, 500)
             axios({
                 method: 'post',
                 url: "/chat/",
@@ -339,6 +322,7 @@ let home = new Vue({
                 home.chat.boxchat = response.data['result'];
                 this.scrollBottom();
             })
+
         },
         send_mess_func: function (user_2_id) {
             axios({
@@ -350,11 +334,10 @@ let home = new Vue({
                 },
             }).then(response => {
                 home.chat.input = '';
+                home.get_mess_content(user_2_id);
                 this.scrollBottom();
-                clearInterval(this.run_Interval);
-                this.get_mess_content(user_2_id);
-
             })
+
         },
         delete_mess_func: function (m_id, from_user_id) {
             home.chat.boxchat_on = true;
@@ -367,7 +350,6 @@ let home = new Vue({
                 },
             }).then(response => {
                 home.chat.input = '';
-                console.log(response.data);
             })
         },
         scrollBottom: function () {

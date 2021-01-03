@@ -26,7 +26,7 @@
 </head>
 <body>
 <div id="app_Shili" class="container-fluid mb-5">
-    <div style="display:none" id="data" user_id="{{ user.id }}" email="{{ user.email }}"></div>
+    <div style="display:none" id="data" user_id="{{ user.id }}" page="{{ page }}" email="{{ user.email }}"></div>
     {% block data %}
     {% endblock data %}
     <div class="backgroundTop"></div>
@@ -109,7 +109,7 @@
                                                 [[item.full_name]]
                                             </div>
                                         </div>
-                                        <div class="chat_window_top_count">Có [[item.soluongtin]] Tin nhắn trong hội
+                                        <div class="chat_window_top_count">Có [[item.count_mess]] Tin nhắn trong hội
                                             thoại này
                                         </div>
                                     </div>
@@ -130,7 +130,7 @@
                                     </template>
                                 </div>
                                 <div class="chat_input_group">
-                                    <input type="text" @click="scrollBottom" @keyup.enter="send_mess_func(item.user_id)"
+                                    <input type="text" @click="scrollBottom()" @input="scrollBottom()" @keyup.enter="send_mess_func(item.user_id)"
                                            v-model="chat.input" class="chat_input"
                                            placeholder="Nhập tin nhắn muốn gửi...">
                                 </div>

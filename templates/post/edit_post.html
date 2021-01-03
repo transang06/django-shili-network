@@ -1,12 +1,12 @@
 {% extends 'home/base.html' %}
 {% load static %}
-{% block title %}Show Poss{% endblock %}
+{% block title %}Chỉnh sửa bài viết{% endblock %}
 {% block data %}
     <div style="display:none" id="data_post"  post_id="{{ post_id }}"></div>
 {% endblock data %}
 {% block noidung %}
-    <div class="container user_follow" v-if="api_one_post">
-        <template v-for="i in api_one_post.result">
+    <div class="container user_follow" v-if="api_post">
+        <template v-for="i in api_post.result">
             <h3 class="mb-3">Chỉnh sửa bài viết của bạn</h3>
             <form class="m-3" action="{% url 'post:edit' post_id %}" enctype="multipart/form-data" method="post">
                 {% csrf_token %}

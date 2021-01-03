@@ -16,7 +16,10 @@ class BoxChat(View):
             data = json.loads(request.body.decode('utf-8'))
             user_2_id = str(data['user_2_id'])
             database = Database(request.user.id)
-            id_room = database.id_room(request.user.id, user_2_id)
+            username = database.id_convert_username(request.user.id)
+            get_profile = database.get_profile(username)
+            id_room = database.check_box_chat(request.user.id, user_2_id)
+            mess_content = database.get_context_box_chat(id_room)
             if not id_room:
                 try:
                     Conv = Conversation()
@@ -24,30 +27,9 @@ class BoxChat(View):
                     Conv.user_2 = MyUser.objects.get(id=user_2_id)
                     Conv.save()
                 except:
-                    return redirect('home:home')
-            soluongtin = database.soLuongTinCuaBox(id_room)
-            sql = "SELECT * FROM user_myuser a WHERE a.username ='" + user_2_id + "' OR a.id ='" + user_2_id + "'"
-            thong_tin_user_2 = MyUser.objects.raw(sql)
-            thislist = []
-            for i in thong_tin_user_2:
-                thisdict = {}
-                thisdict["user_id"] = i.id
-                thisdict["avatar"] = str(i.avatar)
-                thisdict["username"] = i.username
-                thisdict["full_name"] = i.first_name + i.last_name
-                thisdict["soluongtin"] = soluongtin
-                thislist.append(thisdict)
-            sql = "SELECT * FROM user_message WHERE conversation_id =" + str(id_room)
-            mess = Conversation.objects.raw(sql)
-            mess_content = []
-            for i in mess:
-                thisdict = {}
-                thisdict["from_user_id"] = i.from_user_id
-                thisdict["created_at"] = i.created_at
-                thisdict["content"] = i.content
-                thisdict["m_id"] = i.m_id
-                mess_content.append(thisdict)
-        return JsonResponse({'result': thislist, 'mess_content': mess_content})
+                    pass
+            get_profile[0]['count_mess'] = database.count_mess(id_room)
+        return JsonResponse({'result': get_profile, 'mess_content': mess_content})
 
 
 class SaveMess(View):
@@ -56,7 +38,7 @@ class SaveMess(View):
             data = json.loads(request.body.decode('utf-8'))
             user_2_id = str(data['user_2_id'])
             database = Database(request.user.id)
-            id_room = database.id_room(request.user.id, user_2_id)
+            id_room = database.check_box_chat(request.user.id, user_2_id)
             # lưu tin nhắn
             if data['content'] != '':
                 Mess = Message()
