@@ -16,7 +16,7 @@ class BoxChat(View):
             data = json.loads(request.body.decode('utf-8'))
             user_2_id = str(data['user_2_id'])
             database = Database(request.user.id)
-            username = database.id_convert_username(request.user.id)
+            username = database.id_convert_username(user_2_id)
             get_profile = database.get_profile(username)
             id_room = database.check_box_chat(request.user.id, user_2_id)
             mess_content = database.get_context_box_chat(id_room)
@@ -29,7 +29,8 @@ class BoxChat(View):
                 except:
                     pass
             get_profile[0]['count_mess'] = database.count_mess(id_room)
-        return JsonResponse({'result': get_profile, 'mess_content': mess_content})
+            return JsonResponse({'result': get_profile, 'mess_content': mess_content})
+
 
 
 class SaveMess(View):
@@ -59,7 +60,7 @@ class DeleteMess(View):
             get_message = Message.objects.get(m_id=m_id)
             if str(data['from_user_id']) == str(request.user.id) and get_message:
                 get_message.delete()
-                return HttpResponse('Xóa thành công')
-            return HttpResponse('Xóa thất bại')
+                return HttpResponse('Xóa tin nhắn thành công')
+            return HttpResponse('Xóa tin nhắn thất bại')
         else:
             return HttpResponse('Chưa Đăng Nhập')

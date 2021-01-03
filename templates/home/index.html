@@ -3,134 +3,163 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
     <title>{% block title %}Shili - Social Network{% endblock %}</title>
     <link rel="icon" href="{% static 'images/shili.png' %}" type="image/gif">
     <link rel="stylesheet" href="{% static 'fontawesome-free-5.15.1-web/css/all.css' %}">
-    <link rel="stylesheet" href="{% static 'home/css/login.css' %}">
+
     <script type="text/javascript" src="https://code.jquery.com/jquery-latest.pack.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
           integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
-    {#    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>#}
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-latest.pack.js"></script>
-
+    <link rel="stylesheet" href="{% static 'home/css/login.css' %}">
 </head>
 <body>
-<div id="index_login">
-    {#    <div id="navbar">#}
-    {#        <div id="logo" @click="bar='welcome'">Shili</div>#}
-    {#        <div id="navbar_ul">#}
-    {#            <ul>#}
-    {#                <li @click="bar='intro'">Giới Thiệu</li>#}
+<div id="index_login" class="container-fluid p-0">
+    <div class="container-fluid row d-flex justify-content-around align-items-start ">
+        <div class="welcome container mt-5">
+            <h1 class="col-12">WELCOME TO <span>Shili</span></h1>
+            <p class="col-12">Bắt trọn khoảnh khắc - Dẫn dắt xu hướng </p>
+            <button class="btn-grad col-3 my-5" @click="login_bg=!login_bg">Đăng Nhập</button>
+            <div class="row intro my-5">
+                <div class="col-sm">
+                    <template v-for="item in  intro">
+                        {{ i.title }}
 
-    {#            </ul>#}
-    {#        </div>#}
-    {#    </div>#}
-    {% block content %}
-        {#    <div id="welcome" v-if="bar === 'welcome'">#}
-        <div class="welcome">
-            <div>
-                <div id="chao">WELCOME TO <span>Shili</span></div>
+                        <div class="card-body my-3">
+                            <h5 class="card-title">[[item.title]] </h5>
+                            <p class="card-text"> &emsp; &emsp; [[item.content]] <a
+                                    :href="item.href">[[item.link]]</a></p>
+                        </div>
+
+                    </template>
+
+                </div>
+                <div class="col-sm d-flex justify-content-around align-items-center">
+                    <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="{% static 'images/mangXaHoi.png' %}" class="d-block w-100" alt="...">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="{% static 'images/mangXaHoi.png' %}" class="d-block w-100" alt="...">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="{% static 'images/mangXaHoi.png' %}" class="d-block w-100" alt="...">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             </div>
-            <p class="slogan">Bắt trọn khoảnh khắc - Dẫn dắt xu hướng </p>
-            <button class="btn-grad" @click="login_bg=!login_bg">Đăng Nhập</button>
-            <a href="#intro" class="icon-down"><i class="fas fa-chevron-circle-down"></i></a>
         </div>
+    </div>
 
-        <div class="welcome" id="intro">
-            <div>
-                <div id="chao">WELCOME TO <span>Shili</span></div>
-            </div>
-            <p class="slogan">Bắt trọn khoảnh khắc - Dẫn dắt xu hướng</p>
+
+    <template v-if="login_bg">
+        <div class="login">
+            <div class="bg_login" @click="login_bg=!login_bg"></div>
+            <template v-if="themes === 'login'">
+                <div class="form login_">
+                    <h2>Đăng Nhập</h2>
+                    <div>
+                        {% csrf_token %}
+                        <input type="text" v-model="login.username" @keyup.enter="login_func"
+                               placeholder="Tên đăng nhập hoặc email">
+                        <input type="password" v-model="login.password" @keyup.enter="login_func"
+                               placeholder="Mật khẩu" autocomplete="on">
+                        <span>[[login.resultMess]]</span>
+                        <div>
+                            <small @click="themes='forgotPass'">Quên mật khẩu?</small>
+                            <small @click="themes='xacthuc'">Xác thực</small>
+                            <small @click="themes='register'">Đăng Kí</small>
+                        </div>
+
+                        <button class="btn-grad" @click="login_func">Đăng Nhập</button>
+
+                    </div>
+
+                </div>
+            </template>
+            <template v-if="themes === 'forgotPass'">
+                <div class="form login_">
+                    <h2>Quên Mật Khẩu</h2>
+                    <div>
+                        {% csrf_token %}
+                        <input type="email" v-model="forgotPass.email" placeholder="Email">
+                        <span>[[forgotPass.resultMess]]</span>
+                        <button class="btn-grad" @click="forgotPass_func">Lấy lại mật khẩu</button>
+                    </div>
+                    <small @click="themes='login'"> Trở lại</small>
+                </div>
+            </template>
+            <template v-if="themes === 'xacthuc'">
+                <div class="form login_">
+                    <h2>Xác thực tài khoản</h2>
+                    <div>
+                        {% csrf_token %}
+                        <input type="email" v-model="forgotPass.email" placeholder="Email">
+                        <span>[[forgotPass.resultMess]]</span>
+                        <button class="btn-grad" @click="xacthuc_func">Xác thực tài khoản</button>
+                    </div>
+                    <small @click="themes='login'"> Trở lại</small>
+                </div>
+            </template>
+            <template v-if="themes === 'register'">
+                <div class="form register_ ">
+                    <h2>Đăng ký</h2>
+                    <div>
+                        {% csrf_token %}
+                        <div class="chia">
+                            <input class="nua" type="text" v-model="registerUser.firstname" placeholder="Họ">
+                            <input class="nua" type="text" v-model="registerUser.lastname" placeholder="Tên">
+                        </div>
+                        <input class="chia" type="text" v-model="registerUser.username"
+                               :class="{ do: !registerUser.checkUserName, xanh:registerUser.checkUserName}"
+                               @input="checkUserName_func" placeholder="Tên đăng nhập">
+
+                        <input class="chia" type="email" v-model="registerUser.email"
+                               :class="{ do: !registerUser.checkEmail, xanh:registerUser.checkEmail}"
+                               @input="checkEmail_func" placeholder="Email">
+                        <div class="chia">
+                            <input class="nua" type="password"
+                                   :class="{ do: !registerUser.checkPassword , xanh:registerUser.checkPassword}"
+                                   autocomplete="on" @input="checkPassword_func" v-model="registerUser.password1"
+                                   placeholder="Mật khẩu">
+                            <input class="nua" type="password"
+                                   :class="{ do: !registerUser.checkPassword, xanh:registerUser.checkPassword}"
+                                   autocomplete="on" @input="checkPassword_func" v-model="registerUser.password2"
+                                   placeholder="Nhập lại mật khẩu">
+                        </div>
+                        <div class="chia">
+                            <input class="nua" type="date" v-model="registerUser.birthday" placeholder="Ngày sinh"
+                            >
+                            <select class="nua" v-model="registerUser.gender">
+                                <option selected>Giới Tính</option>
+                                <option value="Nam">Nam</option>
+                                <option value="Nu">Nữ</option>
+                            </select>
+                        </div>
+                        <p v-html="info"></p>
+                        <button class="btn-grad" @click="register_func">Đăng Kí</button>
+                        <h5>[[registerUser.resultMess]]</h5>
+                    </div>
+                    <small @click="themes='login'">Trở lại</small>
+
+                </div>
+            </template>
         </div>
-        <template v-if="login_bg">
-            <div class="login">
-                <div class="bg_login" @click="login_bg=!login_bg"></div>
-                <template v-if="themes === 'login'">
-                    <div class="form login_">
-                        <h2>Đăng Nhập</h2>
-                        <div>
-                            {% csrf_token %}
-                            <input type="text" v-model="login.username" @keyup.enter="login_func"
-                                   placeholder="Tên đăng nhập hoặc email">
-                            <input type="password" v-model="login.password" @keyup.enter="login_func"
-                                   placeholder="Mật khẩu" autocomplete="on">
-                            <span>[[login.resultMess]]</span>
-                            <div>
-                                <span @click="themes='forgotPass'">Quên mật khẩu?</span>
-                                <i class="fas fa-grip-lines-vertical"></i>
-                                <span @click="themes='register'">Đăng Kí</span>
-                            </div>
-
-                            <button class="btn-grad" @click="login_func">Đăng Nhập</button>
-
-                        </div>
-
-                    </div>
-                </template>
-                <template v-if="themes === 'forgotPass'">
-                    <div class="form login_">
-                        <h2>Quên Mật Khẩu</h2>
-                        <div>
-                            {% csrf_token %}
-                            <input type="email" v-model="forgotPass.email" placeholder="Email">
-                            <span>[[forgotPass.resultMess]]</span>
-                            <button class="btn-grad" @click="forgotPass_func">Lấy lại mật khẩu</button>
-                        </div>
-                        <i @click="themes='login'" class="fas fa-chevron-circle-left"></i>
-
-                    </div>
-                </template>
-                <template v-if="themes === 'register'">
-                    <div class="form register_ ">
-                        <h2>Đăng ký</h2>
-                        <div>
-                            {% csrf_token %}
-                            <div class="chia">
-                                <input class="nua" type="text" v-model="registerUser.firstname" placeholder="Họ">
-                                <input class="nua" type="text" v-model="registerUser.lastname" placeholder="Tên">
-                            </div>
-                            <input class="chia" type="text" v-model="registerUser.username"
-                                   :class="{ do: !registerUser.checkUserName, xanh:registerUser.checkUserName}"
-                                   @input="checkUserName_func" placeholder="Tên đăng nhập">
-
-                            <input class="chia" type="email" v-model="registerUser.email"
-                                   :class="{ do: !registerUser.checkEmail, xanh:registerUser.checkEmail}"
-                                   @input="checkEmail_func" placeholder="Email">
-                            <div class="chia">
-                                <input class="nua" type="password"
-                                       :class="{ do: !registerUser.checkPassword , xanh:registerUser.checkPassword}"
-                                       autocomplete="on" @input="checkPassword_func" v-model="registerUser.password1"
-                                       placeholder="Mật khẩu">
-                                <input class="nua" type="password"
-                                       :class="{ do: !registerUser.checkPassword, xanh:registerUser.checkPassword}"
-                                       autocomplete="on" @input="checkPassword_func" v-model="registerUser.password2"
-                                       placeholder="Nhập lại mật khẩu">
-                            </div>
-                            <div class="chia">
-                                <input class="nua" type="date" v-model="registerUser.birthday" placeholder="Ngày sinh"
-                                >
-                                <select class="nua" v-model="registerUser.gender">
-                                    <option selected>Giới Tính</option>
-                                    <option value="Nam">Nam</option>
-                                    <option value="Nu">Nữ</option>
-                                </select>
-                            </div>
-                            <p v-html="info"></p>
-                            <button class="btn-grad" @click="register_func">Đăng Kí</button>
-                            <h5>[[registerUser.resultMess]]</h5>
-                        </div>
-                        <i @click="themes='login'" class="fas fa-chevron-circle-left"></i>
-                    </div>
-                </template>
-            </div>
-        </template>
-    {% endblock %}
+    </template>
 
 </div>
 <script src="{% static 'home/javascript/login.js' %}"></script>
 </body>
 </html>
 
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"
+        integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js"
+        integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj"
+        crossorigin="anonymous"></script>

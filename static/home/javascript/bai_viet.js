@@ -2,7 +2,7 @@ axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
 
 let home = new Vue({
-    el: '#app_Shili',
+    el: '#home',
     delimiters: ['[[', ']]'],
     data() {
         return {
@@ -19,7 +19,7 @@ let home = new Vue({
             api_your_friend: {},
             api_post: {},
             search: null,
-            thongBao: false,
+            thongBao: [],
             themes: 'thongtin',
             edit: {
                 first_name: '',
@@ -47,46 +47,51 @@ let home = new Vue({
                 boxchat_on: false,
             },
             comment: {
-                content_input: {},
-                content_input1: {},
-                comment_show: {}
+                content_input: null,
+                comment_show: {},
             },
 
 
         }
     },
     created: function () {
-        this.get_api_top_hashtag;
-        this.get_api_your_friend;
+        this.get_api_top_hashtag();
+        this.get_api_your_friend();
+        setTimeout(() => this.get_api_your_friend(), 0)
+        setInterval(() => this.get_api_your_friend(), 500)
         switch (this.page) {
             case 'Trang chủ Shili':
-                this.get_api_post;
+                this.get_api_post();
                 break;
             case 'Bài viết với ID là':
-                this.api_one_post_func;
+                this.api_one_post_func();
                 break;
             case 'Các bài viết nổi bật trong tuần':
-                this.api_top3_hashtag_post;
+                this.api_top3_hashtag_post();
                 break;
             case 'Bài viết với Hashtag':
-                this.api_hashtag_post_func;
+                this.api_hashtag_post_func();
                 break;
             case 'profile':
-                this.get_profile_func;
+                setTimeout(() => this.get_profile_func(), 0)
+                setInterval(() => this.get_profile_func(), 500)
                 break;
             case 'all_user':
-                this.api_get_all_user_func;
+                setTimeout(() => this.api_get_all_user_func(), 0)
+                setInterval(() => this.api_get_all_user_func(), 500)
                 break;
         }
-
-
     },
     watch: {
         thongBao: function () {
-            setTimeout(() => this.thongBao = false, 5000)
+            setTimeout(() => this.thongBao.shift(), 5000)
         }
     },
-    computed: {
+
+    methods: {
+        test() {
+            alert('load');
+        },
         get_profile_func: function () {
             axios({
                 method: 'post',
@@ -96,6 +101,7 @@ let home = new Vue({
                 },
             }).then(response => {
                 this.get_profile = response.data;
+
             })
         },
         get_api_post: function () {
@@ -160,10 +166,6 @@ let home = new Vue({
             })
         },
 
-    },
-
-
-    methods: {
         scrollToTop() {
             window.scrollTo(0, 0);
         },
@@ -181,8 +183,8 @@ let home = new Vue({
                     birthday: this.edit.birthday,
                 },
             }).then(response => {
-                this.get_profile_func;
-                this.thongBao = response.data;
+                this.get_profile_func();
+                this.thongBao.push(response.data)
             })
         },
         forgotPass_func: function (email) {
@@ -194,11 +196,11 @@ let home = new Vue({
                         email: email,
                     },
                 }).then(response => {
-                    this.thongBao = response.data;
-
+                    this.thongBao.push(response.data)
+                    this.get_profile_func();
                 })
             } else {
-                return this.thongBao = 'Bạn không phải chủ tài khoản này';
+                this.thongBao.push('Bạn không phải chủ tài khoản này')
             }
         },
         delete_post: function (post_id) {
@@ -212,46 +214,60 @@ let home = new Vue({
                 this.open_link('/post/')
             })
         },
-        edit_av_bg_func: function () {
-            axios({
-                method: 'post',
-                url: "/profile/api/editavbg/",
-                data: {
-                    avatar: this.edit_av_bg.avatar,
-                    cover_image: this.edit_av_bg.cover_image,
-                },
-                headers: {
-                    'Content-Type': 'multipart/form-data'
+        check_friend: function (user_id) {
+            for (let a of this.api_your_friend.result) {
+                if (a.id === user_id) {
+                    return true;
                 }
-            }).then(response => {
-                this.get_profile_func;
-            })
+            }
+            return false;
         },
         add_follow: function (friends_id) {
             axios({
                 method: 'post',
-                url: "/profile/addfollow/",
+                url: "/profile/add_follow/",
                 data: {
                     id: friends_id,
                 },
             }).then(response => {
-                this.thongBao = response.data;
+                if (this.username) {
+                    this.get_profile_func();
+                }
+                this.api_get_all_user_func()
+                this.get_api_your_friend();
+                this.thongBao.push(response.data)
+            })
+        },
+        delete_follow: function (friends_id) {
+            axios({
+                method: 'post',
+                url: "/profile/delete_follow/",
+                data: {
+                    id: friends_id,
+                },
+            }).then(response => {
+                this.get_profile_func();
+                this.get_api_your_friend();
+                this.thongBao.push(response.data)
 
 
             })
         },
         comment_func: function (post_id) {
-            axios({
-                method: 'post',
-                url: '/post/comments/',
-                data: {
-                    content_input: home.comment.content_input[`${post_id}`],
-                    post_id: post_id,
-                },
-            }).then(response => {
-                home.comment.content_input = {};
-                return home.comment.comment_show[`${post_id}`] = response.data;
-            })
+            if (home.comment.content_input) {
+                axios({
+                    method: 'post',
+                    url: '/post/comments/',
+                    data: {
+                        content_input: home.comment.content_input,
+                        post_id: post_id,
+                    },
+                }).then(response => {
+                    home.comment.content_input = null;
+                    this.get_cmt(post_id);
+                    this.thongBao.push(response.data)
+                })
+            }
         },
         get_cmt: function (post_id) {
             axios({
@@ -261,23 +277,24 @@ let home = new Vue({
                     post_id: `${post_id}`,
                 },
             }).then(response => {
-                home.comment.comment_show[`${post_id}`] = response.data;
-                home.comment.content_input1 = {}
+                home.comment.comment_show = response.data;
             })
         },
         comment_show_func: function (post_id) {
-            if (this.comment.comment_show[`${post_id}`]) {
-                delete this.comment.comment_show[`${post_id}`];
-                home.comment.content_input1 = {}
+            if (!home.comment.comment_show.result) {
+                home.comment.comment_show = {};
                 clearInterval(this.run_Interval_cmt)
-            } else {
                 this.get_cmt(post_id)
                 this.run_Interval_cmt = setInterval(function () {
                     home.get_cmt(post_id)
                 }, 1000);
+            } else {
+                home.comment.comment_show = {};
+                clearInterval(this.run_Interval_cmt)
             }
-        }
-        ,
+
+
+        },
         comment_delete_func: function (post_id, comment_id) {
             axios({
                 method: 'post',
@@ -287,9 +304,10 @@ let home = new Vue({
                     comment_id: comment_id,
                 },
             }).then(response => {
-                this.thongBao = response.data;
-                return this.get_cmt()
+                this.get_cmt(post_id);
+                this.thongBao.push(response.data)
             })
+
         },
         get_mess_content: function (user_2_id) {
             axios({
@@ -300,11 +318,14 @@ let home = new Vue({
                 },
             }).then(response => {
                 home.chat_content = response.data['mess_content'];
+                home.chat.boxchat = response.data['result'];
             })
         },
         show_box_chat: function () {
             home.chat.boxchat_on = false;
             clearInterval(this.run_Interval_chat);
+
+
         },
         chat_box_func: function (user_2_id) {
             home.chat.boxchat_on = true;
@@ -349,7 +370,7 @@ let home = new Vue({
                     from_user_id: from_user_id,
                 },
             }).then(response => {
-                home.chat.input = '';
+                this.thongBao.push(response.data)
             })
         },
         scrollBottom: function () {

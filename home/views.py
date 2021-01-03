@@ -110,17 +110,38 @@ class Send_pass(View):
     def post(self, request):
         data = json.loads(request.body.decode('utf-8'))
         email = data['email']
-        one_time_pad = MaHoaOneTimePad()
-        result = one_time_pad.ma_hoa(email)
-        mail_content = "Hello"
-        mail_title = "Shili! Đặt lại mật khẩu"
-        domain = request.scheme + '://' + request.META['HTTP_HOST']
-        url = domain + '/resetpassword/' + result[0] + '/' + result[1]
-        content = "Nhấp  vào đây để đặt lại mật khẩu  của bạn"
-        theme = ShiliEmail()
-        msg_html = theme.form_mail(url, content, email)
-        send_mail(mail_title, mail_content, "PLC", [email], html_message=msg_html, fail_silently=False)
-        return HttpResponse('Kiểm tra email để lấy liên kết đến trang thay đổi mật khẩu')
+        if MyUser.objects.filter(email=email).exists():
+            one_time_pad = MaHoaOneTimePad()
+            result = one_time_pad.ma_hoa(email)
+            mail_content = "Hello"
+            mail_title = "Shili! Đặt lại mật khẩu"
+            domain = request.scheme + '://' + request.META['HTTP_HOST']
+            url = domain + '/resetpassword/' + result[0] + '/' + result[1]
+            content = "Nhấp  vào đây để đặt lại mật khẩu  của bạn"
+            theme = ShiliEmail()
+            msg_html = theme.form_mail(url, content, email)
+            send_mail(mail_title, mail_content, "PLC", [email], html_message=msg_html, fail_silently=False)
+            return HttpResponse('Kiểm tra email để lấy liên kết đến trang thay đổi mật khẩu')
+        return HttpResponse('Email chưa đăng kí tài khoản')
+
+
+class Xac_thuc(View):
+    def post(self, request):
+        data = json.loads(request.body.decode('utf-8'))
+        email = data['email']
+        if MyUser.objects.filter(email=email).exists():
+            one_time_pad = MaHoaOneTimePad()
+            result = one_time_pad.ma_hoa(email)
+            mail_content = "Hello"
+            mail_title = "Shili! Xác thực tài khoản"
+            domain = request.scheme + '://' + request.META['HTTP_HOST']
+            url = domain + '/xacthuc/' + result[0] + '/' + result[1]
+            content = "Nhấp  vào đây để xác thực tài khoản"
+            theme = ShiliEmail()
+            msg_html = theme.form_mail(url, content, email)
+            send_mail(mail_title, mail_content, "PLC", [email], html_message=msg_html, fail_silently=False)
+            return HttpResponse('Kiểm tra email để lấy liên kết đến trang xác thực tài khoản')
+        return HttpResponse('Email chưa đăng kí tài khoản')
 
 
 class Xacthuc(View):

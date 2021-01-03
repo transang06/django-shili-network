@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap');
+
 * {
-    font-family: 'Barlow Condensed', sans-serif;
+    font-family: 'Nunito', sans-serif;
     scroll-behavior: smooth;
 }
 
@@ -83,7 +85,7 @@ body {
     color: #192841;
     font-size: 55px;
     padding: 10px;
-    background-color:#FFFFFF;
+    background-color: #FFFFFF;
 
 }
 
@@ -125,39 +127,27 @@ body {
     text-overflow: ellipsis;
     text-shadow: 3px 3px 2px #000000;
 }
-.textOver{
+
+.textOver {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
-/*.fa-autoprefixer {*/
-/*    color: #ffffff;*/
-/*    font-size: 30px;*/
-/*    position: fixed;*/
-/*    bottom: 20px;*/
-/*    right: 20px;*/
-/*}*/
 
-#boxchat {
-    left: 0;
+.hashtag_top {
+    border-bottom: 1px solid #534e4e;
 }
 
-
-.showChat {
-    color: #ffffff;
-    font-size: 30px;
-    position: fixed;
-    bottom: 80px;
-    right: 20px;
+.hashtag_top span {
+    text-align: left;
+    padding: 10px;
 }
+
 
 /*=========================*/
-
-
 .baidang {
     background-color: #ffffff;
-    /*border: 0 solid #3e809bcc;*/
-    /*box-shadow: 0 0 20px #495451;*/
+    box-shadow: 0 0 2px #070000;
     min-height: 100px;
     border-radius: 10px;
     padding: 30px;
@@ -165,7 +155,7 @@ body {
     z-index: 100;
 }
 
-/*====================================*/
+
 .post_thongtin {
     display: grid;
     grid-template: 1fr / 70px 1fr 20px;
@@ -192,6 +182,8 @@ body {
 .post_time {
     font-size: 13px;
     color: #6d6d6d;
+    font-weight: bold;
+    margin-right: 10px;
 }
 
 .post_time:hover {
@@ -212,19 +204,27 @@ label {
 .post_public {
     color: #303030;
     font-size: 13px;
-    font-weight: 300;
+    font-weight: bold;
 }
 
-/*====================================*/
 .post_content {
     padding: 20px 10px;
-    color: #1d0101;
+    color: #030303;
+    font-size: 17px;
 }
 
 .post_hashtag {
-
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
     margin: 10px 0;
+    color: #565555;
 }
+
+.post_hashtag:hover {
+    color: #090909;
+}
+
 
 .post_hashtag a {
     color: #002d8c;
@@ -234,7 +234,6 @@ label {
 .post_hashtag a:hover {
     color: #002d8c;
 }
-
 
 .post_image {
     width: 100%;
@@ -246,49 +245,45 @@ label {
 
 
 /*====================================*/
+.cmt_input {
+    border-radius: 20px;
+}
+
+.cmt_input[placeholder] {
+    font-weight: bold;
+    font-style: italic;
+}
+
 .comment {
-    background-color: #CDDCDC;
-    background-image: radial-gradient(at 50% 100%, rgba(255, 255, 255, 0.50) 0%, rgba(0, 0, 0, 0.50) 100%), linear-gradient(to bottom, rgba(255, 255, 255, 0.25) 0%, rgba(0, 0, 0, 0.25) 100%);
-    background-blend-mode: screen, overlay;
+    background-color: #dce0e0;
     border-radius: 10px;
-    padding: 5px 5px 5px 15px;
-    margin: 10px 0;
+}
+
+.content_cmt {
+    font-size: 18px;
+    margin-left: 15px;
+}
+
+.show_cmt {
+    font-weight: bold;
+    font-style: italic;
 }
 
 .comment_name {
     font-weight: bold;
-    color: #004c7a;
+    color: #262628;
 }
 
-.comment_name:hover {
-
-    color: #004c7a;
+.remove_cmt {
+    float: right;
+    color: #a00606;
 }
 
-.comment_created {
-    color: #585b5b;
-    font-size: 14px;
-    font-weight: bold;
-
+.remove_cmt:hover {
+    color: #6b0101;
+    font-size: 19px;
 }
 
-.comment_content {
-    padding-left: 20px;
-    font-size: 16px;
-
-}
-
-.form-comment {
-    display: grid;
-    margin-top: 10px;
-    grid-template: 1fr / 1fr  100px;
-}
-
-.submit_comment {
-    color: #fff;
-    background-color: #000000;
-    border: 0;
-}
 
 /*========================*/
 #profile {
@@ -377,6 +372,17 @@ label {
 
 }
 
+.card:hover {
+    border-radius: 10px;
+    background-color: #29323c;
+
+    box-shadow: 0 0 4px #4a698c;
+}
+
+.card:hover a {
+    color: #ece8e8;
+}
+
 #group_follow {
     padding: 10px;
     display: grid;
@@ -399,7 +405,6 @@ label {
     width: 45%;
     display: grid;
     grid-template:1fr/60px 1fr 50px;
-
     font-weight: bold;
     margin: 10px;
     background: #5d778a;
@@ -516,11 +521,25 @@ label {
 
 }
 
-.chat_select_avatar {
+.user_Chat {
+    border-bottom: 1px solid #29323c;
+    margin: 15px 10px;
+
+
+}
+
+
+.user_Chat:hover {
+    border-radius: 10px;
+    background-color: #29323c;
+    color: #ece8e8;
+    box-shadow: 0 0 4px #4a698c;
+}
+
+.user_Chat img {
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    margin: 10px 0;
+    width: 60px;
+    height: 60px;
     border: 4px solid #3e809bcc;
     box-shadow: 0 0 10px #012e30;
 }
@@ -530,48 +549,39 @@ label {
     width: 100%;
     height: 100%;
     display: grid;
-    grid-template: 80px 1fr 50px/  1fr;
+    grid-template: 100px 1fr 50px/  1fr;
 
 }
 
 .chat_window_top {
-
-color: #070707;
-    display: grid;
-    grid-template: 1fr/  70px 1fr 20px;
-    border-bottom:1px  solid #000000;
-
+    color: #e3e1e1;
+    background-color: #29323c;
+    margin:5px;
+    padding: 0;
 }
 
-.chat_window_top i {
-
-    margin-top: 10px;
-
-}
-
-.chat_window_top_avatar {
+.chat_window_top img{
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    margin: 5px;
+    width: 60px;
+    height: 60px;
+    margin: 0 auto;
     border: 3px solid #3e809bcc;
-
 }
 
-.chat_window_top_name {
-    margin-top: 5px;
-
+.chat_window_top a {
     text-align: left;
     font-size: 18px;
     font-weight: bold;
+    color: #fff;
 
 }
-
-.chat_window_top_count {
-
-    text-align: left;
-    font-size: 14px;
+.chat_window_top i {
+    font-size: 25px;
+    font-weight: bold;
+    color: #fff;
+    padding: 0;
 }
+
 
 
 .chat_window_content {
@@ -607,7 +617,7 @@ color: #070707;
 .me_right {
     float: right;
     border-radius: 30px 5px 30px 30px;
-    background-image: linear-gradient(109.6deg, rgba(163, 217, 207, 1) 11.2%, rgba(4, 178, 217, 1) 100.2%);
+    background-image: linear-gradient(109.6deg, rgb(193, 217, 255) 11.2%, rgb(132, 194, 208) 100.2%);
     color: #000000;
 }
 
@@ -640,7 +650,10 @@ input[type=text]:focus {
 }
 
 
-
+a {
+    text-decoration: none;
+    color: #2d2c2c;
+}
 
 
 

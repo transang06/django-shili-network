@@ -38,6 +38,21 @@ let index_login = new Vue({
             checkPassword: null,
             resultMess: null,
         },
+        intro: [
+            {
+                title: 'Shili là gì ?',
+                content: 'Shili là nền tảng mạng xã hội miễn phí giúp kết nối bạn với mọi người,\n' +
+                    '                                với Shili bạn sẽ hòa cung dòng chảy với thế giới.'
+            }, {
+                title: 'Shili làm được gì ?',
+                content: 'Shili là cầu nối giữa bạn và thế giới, chúng tôi hỗ trợ các tinh năng chính như : đăng bài, theo dõi lẫn nhau, trò chuyện với mọi người, bình luận về thứ bạn quan tâm, tìm kiếm  nâng cao,...',
+            }, {
+                title: 'Shili là của ai ?',
+                content: 'Shili là nền tảng mạng xã hội miễn phí nên nó là của chung. Nhưng được xây dựng và phát triển bởi',
+                link: 'TRẦN VĂN SÁNG',
+                href: 'https://smpasw.web.app/'
+            },
+        ]
 
     },
     mounted: function () {
@@ -76,7 +91,7 @@ let index_login = new Vue({
         login_func: function () {
             axios({
                 method: 'post',
-                url:  '/login/',
+                url: '/login/',
                 data: {
                     username: this.login.username.toLowerCase(),
                     password: this.login.password,
@@ -84,14 +99,26 @@ let index_login = new Vue({
             }).then(response => {
                 this.login.resultMess = response.data;
                 if (this.login.resultMess === 'success') {
-                    window.location.href = this.domain ;
+                    window.location.href = this.domain;
                 }
             })
         },
         forgotPass_func: function () {
             axios({
                 method: 'post',
-                url: this.domain +'/sendpass/',
+                url: this.domain + '/sendpass/',
+                data: {
+                    email: this.forgotPass.email,
+                },
+            }).then(response => {
+                this.forgotPass.resultMess = response.data;
+
+            })
+        },
+        xacthuc_func: function () {
+            axios({
+                method: 'post',
+                url: this.domain + '/xacthuc/',
                 data: {
                     email: this.forgotPass.email,
                 },
@@ -101,11 +128,10 @@ let index_login = new Vue({
             })
         },
 
-
         register_func: function () {
             axios({
                 method: 'post',
-                url: this.domain +'/register/',
+                url: this.domain + '/register/',
                 data: {
                     firstname: this.registerUser.firstname,
                     lastname: this.registerUser.lastname,

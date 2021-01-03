@@ -25,7 +25,9 @@
                 <i @click="themes='thongtin'" class="fas fa-info-circle mx-4"></i>
                 <i @click="themes='profile'" class="fas fa-address-book mx-4"></i>
                 <i @click="themes='dangtheodoi'" class="fas fa-users mx-4"></i>
-                <i @click="add_follow(profile.user_id)" class="fas fa-user-plus mx-4"></i>
+                {% if username !=  user.username %}
+                    <i @click="add_follow(profile.user_id)" class="fas fa-user-plus mx-4"></i>
+                {% endif %}
             </div>
 
 
@@ -35,27 +37,36 @@
                 </button>
                 <template v-if="get_profile.dangtheodoi.length">
                     <div class="row row-cols-1 row-cols-md-3 g-4">
-                        <template v-for="user_item in get_profile.dangtheodoi">
-                            <div class="col">
-                                <div class="card">
-                                    <img v-if="user_item.avatar" :src="`/media/${user_item.avatar}`"
-                                         class="avatar_boxFriend"
-                                         :alt="user_item.avatar">
-                                    <img v-else src="{% static 'user/images/avatar.png' %}"
-                                         class="avatar_boxFriend"
-                                         alt="avatar">
-                                    <div class="card-body text-center">
-                                        <h5 @click="open_link(`/profile/${ user_item.username}`)" class="card-title">
-                                            [[user_item.full_name]]</h5>
-                                        <p @click="open_link(`/profile/${ user_item.username}`)" class="card-text">
-                                            @[[user_item.username]]</p>
-                                        <i @click="chat_box_func(user_item.id)" data-bs-toggle="modal"
-                                           data-bs-target="#boxchat" class="far fa-comment-alt mx-2"></i>
-                                        <i @click="add_follow(user_item.id)" class="fas fa-plus mx-2"></i>
-                                    </div>
+                        <div class="col" v-for="user_item in get_profile.dangtheodoi" :key="user_item.username">
+                            <div class="card">
+                                <img v-if="user_item.avatar" :src="`/media/${user_item.avatar}`"
+                                     class="avatar_boxFriend"
+                                     :alt="user_item.avatar">
+                                <img v-else src="{% static 'user/images/avatar.png' %}"
+                                     class="avatar_boxFriend"
+                                     alt="avatar">
+                                <div class="card-body text-center">
+                                    <a class="card-title" :href="domain + `/profile/${ user_item.username}`">
+                                        <h5> [[user_item.full_name]]</h5>
+                                    </a>
+                                    <a class="card-text" :href="domain + `/profile/${ user_item.username}`">
+                                        <p @click="open_link()"> @[[user_item.username]]</p>
+                                    </a>
+                                    <i @click="chat_box_func(user_item.id)" data-bs-toggle="modal"
+                                       data-bs-target="#boxchat" style="color:#3793c8;"
+                                       class="far fa-comment-alt mx-2"></i>
+                                    <template v-if="check_friend(user_item.id)">
+                                        <i @click="delete_follow(user_item.id)" style="color:#cd2c2c;"
+                                           class="fas fa-user-times"></i>
+                                    </template>
+                                    <template v-else>
+                                        <i @click="add_follow(user_item.id)" style="color:#33cd70;"
+                                           class="fas fa-user-plus"></i>
+                                    </template>
                                 </div>
                             </div>
-                        </template>
+                        </div>
+
                     </div>
                 </template>
                 <template v-else>
@@ -69,27 +80,39 @@
                 </button>
                 <template v-if="get_profile.duoctheodoi.length">
                     <div class="row row-cols-1 row-cols-md-3 g-4">
-                        <template v-for="user_item in get_profile.duoctheodoi">
-                            <div class="col">
-                                <div class="card">
-                                    <img v-if="user_item.avatar" :src="`/media/${user_item.avatar}`"
-                                         class="avatar_boxFriend"
-                                         :alt="user_item.avatar">
-                                    <img v-else src="{% static 'user/images/avatar.png' %}"
-                                         class="avatar_boxFriend"
-                                         alt="avatar">
-                                    <div class="card-body text-center">
-                                        <h5 class="card-title">[[user_item.full_name]]</h5>
-                                        <p @click="open_link(`/profile/${ user_item.username}`)" class="card-text">
-                                            @[[user_item.username]]</p>
-                                        <i class="far fa-comment-alt mx-5"></i>
-                                        <i @click="add_follow(user_item.id)" class="fas fa-plus mx-5"></i>
-                                    </div>
+                        <div class="col" v-for="user_item in get_profile.duoctheodoi" :key="user_item.username">
+                            <div class="card">
+                                <img v-if="user_item.avatar" :src="`/media/${user_item.avatar}`"
+                                     class="avatar_boxFriend"
+                                     :alt="user_item.avatar">
+                                <img v-else src="{% static 'user/images/avatar.png' %}"
+                                     class="avatar_boxFriend"
+                                     alt="avatar">
+                                <div class="card-body text-center">
+                                    <a class="card-title" :href="domain + `/profile/${ user_item.username}`">
+                                        <h5> [[user_item.full_name]]</h5>
+                                    </a>
+                                    <a class="card-text" :href="domain + `/profile/${ user_item.username}`">
+                                        <p @click="open_link()"> @[[user_item.username]]</p>
+                                    </a>
+                                    <i @click="chat_box_func(user_item.id)" data-bs-toggle="modal"
+                                       data-bs-target="#boxchat" style="color:#3793c8;"
+                                       class="far fa-comment-alt mx-2"></i>
+                                    <template v-if="check_friend(user_item.id)">
+                                        <i @click="delete_follow(user_item.id)" style="color:#cd2c2c;"
+                                           class="fas fa-user-times"></i>
+                                    </template>
+                                    <template v-else>
+                                        <i @click="add_follow(user_item.id)" style="color:#33cd70;"
+                                           class="fas fa-user-plus"></i>
+                                    </template>
                                 </div>
                             </div>
-                        </template>
+                        </div>
+
                     </div>
                 </template>
+
                 <template v-else>
                     <h4>Không có ai trong danh sách này</h4>
                 </template>
@@ -210,81 +233,74 @@
                 </template>
             {% endif %}
             <div class="user_follow" v-if="themes==='profile'">
-                <template v-for="item in get_profile.profile_posts">
-                    <div class="baidang mb-5">
-                        <div class="post_thongtin">
-                            <img v-if="item.avatar" :src="`/media/${item.avatar}`" class="post_avatar"
-                                 :alt="item.avatar" alt="">
-                            <img v-else src="{% static 'user/images/avatar.png' %}" class="post_avatar"
-                                 alt="">
-                            <div>
+                <template v-if="get_profile.profile_posts.length">
+                    <template v-for="item in get_profile.profile_posts">
+                        <div class="baidang mb-5">
+                            <div class="post_thongtin">
+                                <img v-if="item.avatar" :src="`/media/${item.avatar}`" class="post_avatar"
+                                     :alt="item.avatar" alt="">
+                                <img v-else src="{% static 'user/images/avatar.png' %}" class="post_avatar"
+                                     alt="">
                                 <div>
-                                    <a class="post_name"
-                                       :href="`http://127.0.0.1:8000/profile/${item.username}`">[[item.full_name]]</a>
-                                    <label class="post_feeling"><i
-                                            class="fas fa-check-circle"></i> [[item.feeling]]</label>
-                                </div>
-                                <div>
-                                        <span class="post_time"
-                                              @click="open_link(domain+`/post/${item.post_id}/`)"
-
-                                        >[[item.created_at]] </span>
-                                    <label class="post_public"><i
-                                            class="fas fa-globe-europe"> </i> [[item.public]]</label>
-                                </div>
-                            </div>
-                            <div class="dropdown" v-if="user_id == item.user_id">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end  dropdown-menu-dark "
-                                    aria-labelledby="dropdownMenuButton">
-                                    <li @click="open_link(domain+`/post/edit/${item.post_id}/`)"><a
-                                            class="dropdown-item" href="#">Chỉnh
-                                        sửa bài viết</a></li>
-                                    <li @click="delete_post(item.post_id)"><a class="dropdown-item" href="#">Xóa bài
-                                        viết này</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="post_content">[[item.content]]</div>
-                        <div class="post_hashtag">
-                            <div @click="open_link(domain+`/post/hashtag/${item.hashtag.toLowerCase()}`)">
-                                <i class="fas fa-hashtag"></i>[[item.hashtag]]
-                            </div>
-                        </div>
-                        <img v-if="item.photo" :src="`/media/${item.photo}`" class="post_image"
-                             :alt="item.photo" alt="">
-                        <template v-for="cmt in comment.comment_show[`${item.post_id}`]">
-                            <template v-for="key in cmt">
-                                <div class="comment">
                                     <div>
-                                    <span class="comment_name"
-                                          @click="open_link(`/profile/${ key.username}`)">
-                                        [[key.fullname]]
-                                       </span>
-                                        <span class="comment_created"><i
-                                                class="fas fa-clock"></i> [[key.created_at]]
-                                    </span>
+                                        <a class="post_name" :href="domain+`/profile/${item.username}`">[[item.full_name]]</a>
+                                        <label class="post_feeling"><i
+                                                class="fas fa-check-circle"></i> [[item.feeling]]</label>
                                     </div>
-                                    <div class="comment_content">[[key.content]]</div>
-                                    <template v-if="user_id == key.user_id ">
-                                        <i @click="comment_delete_func(item.post_id,key.comment_id)"
-                                           class="fas fa-times"></i>
-                                    </template>
+                                    <div>
+                                        <a class="post_time"
+                                           :href="domain+`/post/${item.post_id}/`">[[item.created_at]]</a>
+
+                                        <label class="post_public"><i
+                                                class="fas fa-globe-europe"> </i> [[item.public]]</label>
+                                    </div>
                                 </div>
-                            </template>
-                        </template>
-                        <div class="form-comment">
-                            <input type="hidden" v-model="comment.content_input1[`${item.post_id}`]">
-                            <input type="text" v-model="comment.content_input[`${item.post_id}`]"
+                                <div class="dropdown" v-if="user_id == item.user_id">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button"
+                                            id="dropdownMenuButton"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end  dropdown-menu-dark "
+                                        aria-labelledby="dropdownMenuButton">
+                                        <li @click="open_link(domain+`/post/edit/${item.post_id}/`)"><a
+                                                class="dropdown-item" href="#">Chỉnh
+                                            sửa bài viết</a></li>
+                                        <li @click="delete_post(item.post_id)"><a class="dropdown-item" href="#">Xóa bài
+                                            viết này</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="post_content">[[item.content]]</div>
+                            <a class="post_hashtag" :href="domain+`/post/hashtag/${item.hashtag.toLowerCase()}`">
+                                <i class="fas fa-hashtag"></i>[[item.hashtag]]</a>
+                            <img v-if="item.photo" :src="`/media/${item.photo}`" class="post_image"
+                                 :alt="item.photo" alt="">
+                            <input type="text" v-model="comment.content_input"
                                    @keyup.enter="comment_func(item.post_id)"
-                                   class="form-control"
+                                   class="col-12 px-4 py-2 cmt_input"
                                    placeholder="Để lại bình luận của bạn">
-                            <button class="btn btn-dark" @click="comment_show_func(item.post_id)">show cmt</button>
+                            <div class="comment container row p-2 my-3 mx-3 col-11"
+                                 v-for="key in comment.comment_show.result"
+                                 v-if="key.post_id == item.post_id" :key="key.comment_id">
+                                <div class="col-12">
+                                    <a class="comment_name" :href="domain + `/profile/${ key.username}`">[[key.fullname]]</a>
+                                    <small class="mx-3"><i class="far fa-clock"></i> [[key.created_at]]</small>
+                                    <i v-if="user_id == key.user_id "
+                                       @click="comment_delete_func(item.post_id,key.comment_id)"
+                                       class="fas fa-trash-alt remove_cmt"></i>
+                                </div>
+                                <div class="col-12 content_cmt">[[key.content]]</div>
+                            </div>
+                            <div class="show_cmt mt-3 mx-3 col-12" @click="comment_show_func(item.post_id)"><i
+                                    class="fas fa-share"></i>
+                                Hiển thị bình luận
+                            </div>
                         </div>
-                    </div>
+                    </template>
+                </template>
+                <template v-else>
+                   <h3> Tài khoản này chưa có bài đăng nào</h3>
                 </template>
             </div>
         </template>

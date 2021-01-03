@@ -90,8 +90,8 @@ class Add_follow(View):
         if request.user.is_authenticated:
             data = json.loads(request.body.decode('utf-8'))
             database = Database(request.user.id)
-            id_room = database.check_id_follow(request.user.id, data['id'])
-            if not id_room:
+            id_follower = database.check_id_follow(request.user.id, data['id'])
+            if not id_follower:
                 fl = Follower()
                 fl.main_user = request.user
                 fl.followres = MyUser.objects.get(id=data['id'])
@@ -99,6 +99,23 @@ class Add_follow(View):
                 return HttpResponse('Follow thành công, hãy tiếp tục theo dõi những người khác')
             else:
                 return HttpResponse('Có vẻ như bạn đã theo dõi người này, hãy kiểm tra lại nhé.')
+
+        else:
+            return redirect('home:home')
+
+
+class Delete_follow(View):
+    def post(self, request):
+        if request.user.is_authenticated:
+            data = json.loads(request.body.decode('utf-8'))
+            database = Database(request.user.id)
+            id_follower = database.check_id_follow(request.user.id, data['id'])
+            if id_follower:
+                fl = Follower.objects.get(f_id=id_follower)
+                fl.delete()
+                return HttpResponse('Hủy follow thành công, hãy tiếp tục theo dõi những người khác')
+            else:
+                return HttpResponse('Có vẻ như bạn chưa theo dõi người này, hãy kiểm tra lại nhé.')
 
         else:
             return redirect('home:home')

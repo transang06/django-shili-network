@@ -3,7 +3,8 @@ from user import views
 
 app_name = 'user'
 urlpatterns = [
-    path('addfollow/', views.Add_follow.as_view(), name='add_follow'),
+    path('add_follow/', views.Add_follow.as_view(), name='add_follow'),
+    path('delete_follow/', views.Delete_follow.as_view(), name='delete_follow'),
     path('alluser/', views.AllUser.as_view(), name='all_user'),
 
     path('<str:user_username>', views.Profile.as_view(), name='profile'),

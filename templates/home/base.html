@@ -25,7 +25,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
-<div id="app_Shili" class="container-fluid mb-5">
+<div id="home" class="container-fluid mb-5">
     <div style="display:none" id="data" user_id="{{ user.id }}" page="{{ page }}" email="{{ user.email }}"></div>
     {% block data %}
     {% endblock data %}
@@ -43,8 +43,12 @@
                                  class="mr-3 mt-3 rounded-circle ">
                         {% endif %}
                     </div>
-                    <h3 id="name" class="mt-3"
-                        @click="open_link('/profile/')">{{ user.first_name }} {{ user.last_name }}</h3>
+                    <a :href="domain+`/profile/`">
+                        <h3 id="name" class="mt-3" @click="open_link('/profile/')">
+                            {{ user.first_name }} {{ user.last_name }}
+                        </h3>
+                    </a>
+
                 </div>
                 <div class="sticky">
                     <input class="form-control mt-5 modal-title" v-model="search"
@@ -52,17 +56,17 @@
                            type="search"
                            placeholder="Tìm kiếm hashtag" aria-label="Search">
                     <div class="container-fluid d-flex flex-row flex-wrap justify-content-around">
-                        <i @click="open_link(domain)" class="fas fa-home "></i>
-                        <i @click="open_link('/profile/')" class="fas fa-address-card"></i>
+                        <a :href="domain"><i class="fas fa-home "></i></a>
+                        <a :href="domain +'/profile/'"><i class="fas fa-address-card"></i></a>
                         <i class="fas fa-feather-alt" data-bs-toggle="modal" data-bs-target="#set_post"></i>
                         <i class="fas fa-comment-alt" data-bs-toggle="modal" data-bs-target="#boxchat"></i>
-                        <i @click="open_link(domain+`/profile/alluser/`)" class="fas fa-users"></i>
+                        <a :href="domain+`/profile/alluser/`"><i class="fas fa-users"></i></a>
                         <i class="fas fa-hashtag" data-bs-toggle="modal" data-bs-target="#hashtag"></i>
                         <i @click="scrollToTop" class="fas fa-angle-double-up"></i>
-                        <i @click="open_link(domain+`/logout/`)" class="fas fa-sign-out-alt"></i>
+                        <a :href="domain+`/logout/`"> <i class="fas fa-sign-out-alt"></i> </a>
                     </div>
-                    <div v-show="thongBao" class="alert alert-success mt-3" role="alert">
-                        <strong>Chào {{ user.last_name }}! </strong> [[thongBao]]
+                    <div v-show="thongBao" v-for="tb in thongBao" class="alert alert-success mt-3" role="alert">
+                        <strong>Chào {{ user.last_name }}! </strong> [[tb]]
                     </div>
                 </div>
             </div>
@@ -73,50 +77,41 @@
         </div>
 
 
-
         <div id="boxchat" class="modal fixed-left fade" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-dialog-aside" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Kết nối với mọi người</h5>
                     </div>
-                    <div class="modal-body">
-                        <template v-if="!chat.boxchat_on" v-for="item in api_your_friend.result">
-                            <div @click="chat_box_func(item.id)">
-                                <div class="p-3 row">
-                                    <img v-if="item.avatar" :src="`/media/${item.avatar}`"
-                                         class="col-3  rounded-circle"
-                                         style="width:60px;"
-                                         :alt="item.avatar">
-                                    <img v-else src="{% static 'user/images/avatar.png' %}" alt="avatar"
-                                         class="col-3 rounded-circle" style="width:60px;">
-                                    <h5 class="media-body col-9 textOver">[[item.full_name]]</h5>
+                    <div class="modal-body p-0">
+                        <template v-if="!chat.boxchat_on" v-for="item in api_your_friend.result" >
+                            <div class="p-3 row user_Chat" @click="chat_box_func(item.id)" :key="item.full_name">
+                                <img v-if="item.avatar" :src="`/media/${item.avatar}`" class="col-3 p-0"
+                                     :alt="item.avatar">
+                                <img v-else src="{% static 'user/images/avatar.png' %}" alt="avatar"
+                                     class="col-3 p-0">
+                                <div class="col-9 textOver ">
+                                    <h5 class="col-12">[[item.full_name]]</h5>
+                                    <h6 class="col-12">@[[item.username]]</h6>
                                 </div>
                             </div>
                         </template>
                         <template v-if="chat.boxchat_on" v-for="item in chat.boxchat">
                             <div class="chat_window">
-                                <div class="chat_window_top">
+                                <div class="chat_window_top row d-flex justify-content-around align-items-center">
                                     <img v-if="item.avatar" :src="`/media/${item.avatar}`"
-                                         class="chat_select_avatar"
-                                         :alt="item.avatar">
+                                         :alt="item.avatar" class="col-2 p-0">
                                     <img v-else src="{% static 'user/images/avatar.png' %}"
-                                         class="chat_select_avatar"
-                                         alt="avatar">
-                                    <div>
-                                        <div class="chat_window_top_name">
-                                            <div @click="open_link(domain+`/profile/${item.username}`)">
-                                                [[item.full_name]]
-                                            </div>
-                                        </div>
-                                        <div class="chat_window_top_count">Có [[item.count_mess]] Tin nhắn trong hội
-                                            thoại này
-                                        </div>
+                                         alt="avatar" class="col-3 p-0">
+                                    <div class="col-9 row">
+                                        <a class="col-12"
+                                           :href="domain+`/profile/${item.username}`">[[item.full_name]]</a>
+                                        <span>Có [[item.count_mess]] Tin nhắn trong hội thoại này</span>
                                     </div>
-                                    <div @click="show_box_chat"><i class="fas fa-arrow-circle-left fs-5"></i></div>
+                                    <i @click="show_box_chat" class="fas fa-arrow-circle-left col-1"></i>
                                 </div>
                                 <div id="container" class="chat_window_content">
-                                    <template v-for="mess in chat_content">
+                                    <template v-for="mess in chat_content" >
                                         <div v-if="mess.from_user_id != user_id" data-bs-toggle="tooltip"
                                              data-bs-placement="right" :title="mess.created_at"
                                              class="you">
@@ -130,7 +125,8 @@
                                     </template>
                                 </div>
                                 <div class="chat_input_group">
-                                    <input type="text" @click="scrollBottom()" @input="scrollBottom()" @keyup.enter="send_mess_func(item.user_id)"
+                                    <input type="text" @click="scrollBottom()" @input="scrollBottom()"
+                                           @keyup.enter="send_mess_func(item.user_id)"
                                            v-model="chat.input" class="chat_input"
                                            placeholder="Nhập tin nhắn muốn gửi...">
                                 </div>
@@ -144,17 +140,21 @@
             <div class="modal-dialog modal-dialog-aside" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 @click="open_link(domain+`/post/hashtag/`)" class="modal-title">Hashtag nổi bật</h4>
+                        <a :href="domain+`/post/hashtag/`">
+                            <h3 class="modal-title">Hashtag nổi bật</h3>
+                        </a>
                     </div>
                     <div class="modal-body">
                         <p>Mỗi bài viết sẽ có duy nhất 1 hashtag, chúng tôi dựa vào số lượng bài viết để
                             xếp hạng hashtag</p>
                         <template v-for="hashtag in api_top_hashtag.result">
-                            <li class="list-group-item d-flex justify-content-between align-items-center"
-                                @click="open_link(domain+`/post/hashtag/${hashtag.hashtag.toLowerCase()}`)">
-                                #[[hashtag.hashtag]]
-                                <span>[[hashtag.soluot]] lượt</span>
-                            </li>
+                            <div class="row my-3 hashtag_top">
+                                <a class="col-8 post_hashtag"
+                                   :href="domain+`/post/hashtag/${hashtag.hashtag.toLowerCase()}`">
+                                    <i class="fas fa-hashtag "></i>[[hashtag.hashtag]]
+                                </a>
+                                <span class="row col-4">[[hashtag.soluot]] lượt</span>
+                            </div>
                         </template>
                     </div>
                 </div>

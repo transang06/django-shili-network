@@ -169,6 +169,7 @@ class Database:
             thisdict["comment_id"] = i.comment
             thisdict["fullname"] = i.first_name + i.last_name
             thisdict["created_at"] = i.created_at
+            thisdict["post_id"] = i.post_id
             comment_post_id.append(thisdict)
         return comment_post_id
 
@@ -279,7 +280,7 @@ class Database:
         sql = "SELECT f_id FROM user_follower WHERE main_user_id = " + str(
             user_1) + " AND followres_id =  " + str(user_2)
         if Conversation.objects.raw(sql)[:1]:
-            return True
+            return Conversation.objects.raw(sql)[:1][0].f_id
         else:
             return False
 
@@ -288,7 +289,7 @@ class Database:
         sql = "SELECT c_id FROM user_conversation WHERE user_1_id = '" + str(user_1) + "' AND user_2_id = '" + str(
             user_2) + "' OR user_2_id =  '" + str(user_1) + "' AND user_1_id = '" + str(user_2) + "'"
         if Conversation.objects.raw(sql)[:1]:
-            return True
+            return Conversation.objects.raw(sql)[0:1][0].c_id
         else:
             return False
 

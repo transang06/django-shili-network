@@ -129,7 +129,7 @@ class ApiTopHashtag(View):
     def post(self, request):
         if request.user.is_authenticated:
             database = Database(request.user.id)
-            get_count_top_x_hashtag = database.get_count_top_x_hashtag(3)
+            get_count_top_x_hashtag = database.get_count_top_x_hashtag(12)
             return JsonResponse({'result': get_count_top_x_hashtag})
         else:
             return redirect('home:login')
@@ -139,17 +139,19 @@ class Comment_post(View):
     def post(self, request):
         data = json.loads(request.body.decode('utf-8'))
         try:
-            if data['content_input'] != '':
+            if data['content_input']:
                 new_cm = Comment()
                 new_cm.content = data['content_input']
                 new_cm.user_id = request.user.id
                 new_cm.post_id = data['post_id']
                 new_cm.save()
+                return HttpResponse('bình luận thành công, hãy tiếp tục tương tác nhé')
         except:
             pass
         database = Database(request.user.id)
         get_comment_post_id = database.get_comment_post_id(data['post_id'])
         return JsonResponse({'result': get_comment_post_id})
+
 
 
 class Delete_comment(View):

@@ -16,16 +16,13 @@
                      alt="">
                 <div>
                     <div>
-                        <a class="post_name"
-                           :href="`http://127.0.0.1:8000/profile/${item.username}`">[[item.full_name]]</a>
+                        <a class="post_name" :href="domain+`/profile/${item.username}`">[[item.full_name]]</a>
                         <label class="post_feeling"><i
                                 class="fas fa-check-circle"></i> [[item.feeling]]</label>
                     </div>
                     <div>
-                                        <span class="post_time"
-                                              @click="open_link(domain+`/post/${item.post_id}/`)"
+                        <a class="post_time" :href="domain+`/post/${item.post_id}/`">[[item.created_at]]</a>
 
-                                        >[[item.created_at]] </span>
                         <label class="post_public"><i
                                 class="fas fa-globe-europe"> </i> [[item.public]]</label>
                     </div>
@@ -44,40 +41,26 @@
                 </div>
             </div>
             <div class="post_content">[[item.content]]</div>
-            <div class="post_hashtag">
-                <div @click="open_link(domain+`/post/hashtag/${item.hashtag.toLowerCase()}`)">
-                    <i class="fas fa-hashtag"></i>[[item.hashtag]]
-                </div>
-            </div>
+            <a class="post_hashtag" :href="domain+`/post/hashtag/${item.hashtag.toLowerCase()}`">
+                <i class="fas fa-hashtag"></i>[[item.hashtag]]</a>
             <img v-if="item.photo" :src="`/media/${item.photo}`" class="post_image"
                  :alt="item.photo" alt="">
-            <template v-for="cmt in comment.comment_show[`${item.post_id}`]">
-                <template v-for="key in cmt">
-                    <div class="comment">
-                        <div>
-                                    <span class="comment_name"
-                                          @click="open_link(`/profile/${ key.username}`)">
-                                        [[key.fullname]]
-                                       </span>
-                            <span class="comment_created"><i
-                                    class="fas fa-clock"></i> [[key.created_at]]
-                                    </span>
-                        </div>
-                        <div class="comment_content">[[key.content]]</div>
-                        <template v-if="user_id == key.user_id ">
-                            <i @click="comment_delete_func(item.post_id,key.comment_id)"
-                               class="fas fa-times"></i>
-                        </template>
-                    </div>
-                </template>
-            </template>
-            <div class="form-comment">
-                <input type="hidden" v-model="comment.content_input1[`${item.post_id}`]">
-                <input type="text" v-model="comment.content_input[`${item.post_id}`]"
-                       @keyup.enter="comment_func(item.post_id)"
-                       class="form-control"
-                       placeholder="Để lại bình luận của bạn">
-                <button class="btn btn-dark" @click="comment_show_func(item.post_id)">show cmt</button>
+            <input type="text" v-model="comment.content_input"
+                   @keyup.enter="comment_func(item.post_id)"
+                   class="col-12 px-4 py-2 cmt_input"
+                   placeholder="Để lại bình luận của bạn">
+            <div class="comment container row p-2 my-3 mx-3 col-11" v-for="key in comment.comment_show.result"
+                 v-if="key.post_id == item.post_id" :key="key.comment_id">
+                <div class="col-12">
+                    <a class="comment_name" :href="domain + `/profile/${ key.username}`">[[key.fullname]]</a>
+                    <small class="mx-3"><i class="far fa-clock"></i> [[key.created_at]]</small>
+                    <i v-if="user_id == key.user_id " @click="comment_delete_func(item.post_id,key.comment_id)"
+                       class="fas fa-trash-alt remove_cmt"></i>
+                </div>
+                <div class="col-12 content_cmt">[[key.content]]</div>
+            </div>
+            <div class="show_cmt mt-3 mx-3 col-12" @click="comment_show_func(item.post_id)"><i class="fas fa-share"></i>
+                Hiển thị bình luận
             </div>
         </div>
     </template>
