@@ -22,7 +22,6 @@
                     </div>
                     <div>
                         <a class="post_time" :href="domain+`/post/${item.post_id}/`">[[item.created_at]]</a>
-
                         <label class="post_public"><i
                                 class="fas fa-globe-europe"> </i> [[item.public]]</label>
                     </div>
@@ -33,10 +32,8 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end  dropdown-menu-dark "
                         aria-labelledby="dropdownMenuButton">
-                        <li @click="open_link(domain+`/post/edit/${item.post_id}/`)"><a class="dropdown-item" href="#">Chỉnh
-                            sửa bài viết</a></li>
-                        <li @click="delete_post(item.post_id)"><a class="dropdown-item" href="#">Xóa bài viết này</a>
-                        </li>
+                        <li @click="open_link(domain+`/post/edit/${item.post_id}/`)">Chỉnh sửa bài viết</li>
+                        <li @click="delete_post(item.post_id)">Xóa bài viết này</li>
                     </ul>
                 </div>
             </div>

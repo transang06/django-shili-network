@@ -1,0 +1,27 @@
+{
+  "intro": [
+    {
+      "title": "Shili là gì ?",
+      "content": "Shili là nền tảng mạng xã hội miễn phí giúp kết nối bạn với mọi người,với Shili bạn sẽ hòa cung dòng chảy với thế giới."
+    },
+    {
+      "title": "Shili làm được gì ?",
+      "content": "Shili là cầu nối giữa bạn và thế giới, chúng tôi hỗ trợ các tinh năng chính như : đăng bài, theo dõi lẫn nhau, trò chuyện với mọi người, bình luận về thứ bạn quan tâm, tìm kiếm  nâng cao,..."
+    },
+    {
+      "title": "Shili là của ai ?",
+      "content": "Shili là nền tảng mạng xã hội miễn phí nên nó là của chung. Nhưng được xây dựng và phát triển bởi",
+      "link": "TRẦN VĂN SÁNG",
+      "href": "https://smpasw.web.app/"
+    }
+  ],
+  "thong_bao": {
+      "sai_format":"Email hoặc username không đúng định dạng hãy lại",
+      "sai_email":"Email không đúng định dạng hãy lại",
+      "full":"Hãy nhập đầy đủ thông tin"
+
+    }
+
+
+
+}

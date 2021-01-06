@@ -20,30 +20,6 @@ class Index(View):
         else:
             return render(request, 'home/index.html')
 
-    def post(self, request):
-        if request.user.is_authenticated:
-            # Đăng bài
-            content = request.POST.get('content')
-            hashtag = request.POST.get('hashtag').upper().replace(" ", "")
-            feeling = request.POST.get('feeling')
-            tag_friends = request.POST.get('tag_friends')
-            public = request.POST.get('public')
-            photo = ''
-            try:
-                photo = request.FILES['photo']
-            except:
-                pass
-            new_post = Post()
-            new_post.content = content
-            new_post.photo = photo
-            new_post.hashtag = hashtag
-            new_post.feeling = feeling
-            new_post.tag_friends = tag_friends
-            new_post.public = public
-            new_post.user = request.user
-            new_post.save()
-            return redirect('home:home')
-
 
 class Login_user(View):
     def post(self, request):
@@ -61,9 +37,9 @@ class Login_user(View):
                     return HttpResponse('success')
                 else:
                     return HttpResponse(
-                        'Tài khoản đã bị vô hiệu hóa vì chưa được xác thực. Hãy kiểm tra email để lấy link xác thực.')
+                        "Tài khoản này chưa được kích hoạt. Hãy kích hoạt tài khoản trước khi đăng nhập")
             else:
-                return HttpResponse('Tài khoản hoặc mật khẩu chưa chính xác. Vui lòng thử lại')
+                return HttpResponse('Thông tin đăng nhập không chính xác. Vui lòng kiểm tra lại')
 
 
 def logout_user(request):
@@ -101,7 +77,8 @@ class Register_user(View):
                 theme = ShiliEmail()
                 msg_html = theme.form_mail(url, content, email)
                 send_mail(mail_title, mail_content, "PLC", [email], html_message=msg_html, fail_silently=False)
-                return HttpResponse('Đăng kí thành công tài khoản. Kiểm tra email để nhận liên kết kích hoạt tài khoản')
+                return HttpResponse(
+                    'Đăng kí thành công tài khoản. Kiểm tra email để nhận liên kết kích hoạt tài khoản')
             else:
                 return HttpResponse('Có lỗi xảy ra! Vui lòng thử lại')
 
@@ -122,7 +99,7 @@ class Send_pass(View):
             msg_html = theme.form_mail(url, content, email)
             send_mail(mail_title, mail_content, "PLC", [email], html_message=msg_html, fail_silently=False)
             return HttpResponse('Kiểm tra email để lấy liên kết đến trang thay đổi mật khẩu')
-        return HttpResponse('Email chưa đăng kí tài khoản')
+        return HttpResponse('Email này không tồn tại trong hệ thống,vui lòng kiểm tra lại')
 
 
 class Xac_thuc(View):
@@ -141,7 +118,7 @@ class Xac_thuc(View):
             msg_html = theme.form_mail(url, content, email)
             send_mail(mail_title, mail_content, "PLC", [email], html_message=msg_html, fail_silently=False)
             return HttpResponse('Kiểm tra email để lấy liên kết đến trang xác thực tài khoản')
-        return HttpResponse('Email chưa đăng kí tài khoản')
+        return HttpResponse('Email này không tồn tại trong hệ thống, vui lòng kiểm tra lại')
 
 
 class Xacthuc(View):
@@ -189,7 +166,7 @@ class Check(View):
         email = data['email']
         try:
             MyUser.objects.get(username=username)
-            return HttpResponse('Username đã tồn tại trong hệ thống  vui lòng thử username mới')
+            return HttpResponse('Username đã tồn tại trong hệ thống vui lòng thử username mới')
         except:
             pass
         try:

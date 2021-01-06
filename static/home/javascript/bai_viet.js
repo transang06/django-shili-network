@@ -238,21 +238,6 @@ let home = new Vue({
                 this.thongBao.push(response.data)
             })
         },
-        delete_follow: function (friends_id) {
-            axios({
-                method: 'post',
-                url: "/profile/delete_follow/",
-                data: {
-                    id: friends_id,
-                },
-            }).then(response => {
-                this.get_profile_func();
-                this.get_api_your_friend();
-                this.thongBao.push(response.data)
-
-
-            })
-        },
         comment_func: function (post_id) {
             if (home.comment.content_input) {
                 axios({

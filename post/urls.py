@@ -13,11 +13,4 @@ urlpatterns = [
     path('comments/', views.Comment_post.as_view(), name='comments'),
     path('delete_comment/', views.Delete_comment.as_view(), name='delete_comment'),
     path('api/top_hashtag/', views.ApiTopHashtag.as_view(), name='top_hashtag'),
-    # path('search/', views.Search.as_view(), name='search'),
-
-
-
-
-
-
 ]

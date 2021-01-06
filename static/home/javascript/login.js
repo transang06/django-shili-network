@@ -7,24 +7,24 @@ let index_login = new Vue({
         regEX: /^[a-z0-9_-]{3,16}$/,
         login_bg: false,
         themes: 'login',
-        info: null,
         domain: window.location.origin,
         login: {
             username: null,
             password: null,
-            resultMess: null,
+            result: null,
         },
-        forgotPass: {
+        password: {
             email: null,
-            resultMess: null,
-        },
-        resetPassword: {
-            checkResetPassword: null,
+            result: null,
             password1: null,
             password2: null,
-            resultMess: null,
+            check:false
         },
-        registerUser: {
+        activate: {
+            email: null,
+            result: null,
+        },
+        sign_up: {
             firstname: null,
             lastname: null,
             username: null,
@@ -36,114 +36,128 @@ let index_login = new Vue({
             checkUserName: null,
             checkEmail: null,
             checkPassword: null,
-            resultMess: null,
+            result: null,
         },
-        intro: [
-            {
-                title: 'Shili là gì ?',
-                content: 'Shili là nền tảng mạng xã hội miễn phí giúp kết nối bạn với mọi người,\n' +
-                    '                                với Shili bạn sẽ hòa cung dòng chảy với thế giới.'
-            }, {
-                title: 'Shili làm được gì ?',
-                content: 'Shili là cầu nối giữa bạn và thế giới, chúng tôi hỗ trợ các tinh năng chính như : đăng bài, theo dõi lẫn nhau, trò chuyện với mọi người, bình luận về thứ bạn quan tâm, tìm kiếm  nâng cao,...',
-            }, {
-                title: 'Shili là của ai ?',
-                content: 'Shili là nền tảng mạng xã hội miễn phí nên nó là của chung. Nhưng được xây dựng và phát triển bởi',
-                link: 'TRẦN VĂN SÁNG',
-                href: 'https://smpasw.web.app/'
-            },
-        ]
+        intro: null,
+        thong_bao: null,
 
     },
-    mounted: function () {
+    created: function () {
+        axios({
+            url: this.domain + '/static/home/Json/login_page.json',
+        }).then(response => {
+            this.intro = response.data.intro
+            this.thong_bao = response.data.thong_bao
 
+        })
     },
     methods: {
+        login_func: function () {
+            if (!this.login.username) {
+                return this.login.result = this.thong_bao.full;
+            }
+            if (this.regEX.test(this.login.username) || /\S+@\S+\.\S+/.test(this.login.username)) {
+                axios({
+                    method: 'post',
+                    url: '/login/',
+                    data: {
+                        username: this.login.username.toLowerCase(),
+                        password: this.login.password,
+                    },
+                }).then(response => {
+                    this.login.result = response.data;
+                    if (this.login.result === 'success') {
+                        window.location.href = this.domain;
+                    }
+
+                })
+            } else {
+                return this.login.result = this.thong_bao.sai_format;
+            }
+
+
+        },
+        forgotPass_func: function () {
+            if (/\S+@\S+\.\S+/.test(this.password.email)) {
+                axios({
+                    method: 'post',
+                    url: this.domain + '/sendpass/',
+                    data: {
+                        email: this.password.email,
+                    },
+                }).then(response => {
+                    this.password.result = response.data;
+                })
+            } else {
+                this.password.result = this.thong_bao.sai_email
+            }
+        },
+        activate_func: function () {
+            if (/\S+@\S+\.\S+/.test(this.activate.email)) {
+                axios({
+                    method: 'post',
+                    url: this.domain + '/xacthuc/',
+                    data: {
+                        email: this.activate.email,
+                    },
+                }).then(response => {
+                    this.activate.result = response.data;
+                })
+            } else {
+                this.activate.result = this.thong_bao.sai_email
+            }
+        },
         check__: function () {
             axios({
                 method: 'post',
                 url: '/check/',
                 data: {
-                    username: this.registerUser.username,
-                    email: this.registerUser.email,
+                    username: this.sign_up.username,
+                    email: this.sign_up.email,
                 },
             }).then(response => {
-                this.info = response.data;
-
+                this.sign_up.result = response.data;
             })
         },
+
         checkUserName_func: function () {
-            this.check__();
-            this.registerUser.checkUserName = this.regEX.test(this.registerUser.username);
+            if (this.sign_up.username) {
+                this.sign_up.username = this.sign_up.username.toLowerCase()
+                this.check__();
+                return this.sign_up.checkUserName = this.regEX.test(this.sign_up.username);
+            }
         },
         checkEmail_func: function () {
             this.check__();
-            this.registerUser.checkEmail = /\S+@\S+\.\S+/.test(this.registerUser.email);
+            return this.sign_up.checkEmail = /\S+@\S+\.\S+/.test(this.sign_up.email);
         },
         checkPassword_func: function () {
-            this.registerUser.checkPassword = this.registerUser.password1 === this.registerUser.password2;
+            return this.sign_up.checkPassword = this.sign_up.password1 === this.sign_up.password2;
         },
         checkResetPassword: function () {
-            console.log(this.resetPassword.password1);
-            this.resetPassword.checkResetPassword = this.resetPassword.password1 === this.resetPassword.password2 && this.resetPassword.password1 !== '';
-
+            return this.password.check = this.password.password1 === this.password.password2 && this.password.password1 !== '';
         },
-        login_func: function () {
-            axios({
-                method: 'post',
-                url: '/login/',
-                data: {
-                    username: this.login.username.toLowerCase(),
-                    password: this.login.password,
-                },
-            }).then(response => {
-                this.login.resultMess = response.data;
-                if (this.login.resultMess === 'success') {
-                    window.location.href = this.domain;
-                }
-            })
-        },
-        forgotPass_func: function () {
-            axios({
-                method: 'post',
-                url: this.domain + '/sendpass/',
-                data: {
-                    email: this.forgotPass.email,
-                },
-            }).then(response => {
-                this.forgotPass.resultMess = response.data;
-
-            })
-        },
-        xacthuc_func: function () {
-            axios({
-                method: 'post',
-                url: this.domain + '/xacthuc/',
-                data: {
-                    email: this.forgotPass.email,
-                },
-            }).then(response => {
-                this.forgotPass.resultMess = response.data;
-
-            })
-        },
-
         register_func: function () {
-            axios({
-                method: 'post',
-                url: this.domain + '/register/',
-                data: {
-                    firstname: this.registerUser.firstname,
-                    lastname: this.registerUser.lastname,
-                    username: this.registerUser.username.toLowerCase(),
-                    email: this.registerUser.email,
-                    password1: this.registerUser.password1,
-                    birthday: this.registerUser.birthday,
-                    gender: this.registerUser.gender,
-                },
-            }).then(response => {
-                this.registerUser.resultMess = response.data;
-            })
+            if (this.checkUserName_func() && this.checkEmail_func() && this.checkPassword_func() && this.sign_up.birthday && this.sign_up.gender && this.sign_up.firstname && this.sign_up.lastname) {
+                axios({
+                    method: 'post',
+                    url: this.domain + '/register/',
+                    data: {
+                        firstname: this.sign_up.firstname,
+                        lastname: this.sign_up.lastname,
+                        username: this.sign_up.username.toLowerCase(),
+                        email: this.sign_up.email,
+                        password1: this.sign_up.password1,
+                        birthday: this.sign_up.birthday,
+                        gender: this.sign_up.gender,
+                    },
+                }).then(response => {
+                    this.sign_up.result = response.data;
+                })
+            } else {
+                return this.sign_up.result = this.thong_bao.full;
+            }
+
         }
     }
 });

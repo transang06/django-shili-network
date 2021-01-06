@@ -56,7 +56,7 @@
                                        data-bs-target="#boxchat" style="color:#3793c8;"
                                        class="far fa-comment-alt mx-2"></i>
                                     <template v-if="check_friend(user_item.id)">
-                                        <i @click="delete_follow(user_item.id)" style="color:#cd2c2c;"
+                                        <i @click="add_follow(user_item.id)" style="color:#cd2c2c;"
                                            class="fas fa-user-times"></i>
                                     </template>
                                     <template v-else>
@@ -99,7 +99,7 @@
                                        data-bs-target="#boxchat" style="color:#3793c8;"
                                        class="far fa-comment-alt mx-2"></i>
                                     <template v-if="check_friend(user_item.id)">
-                                        <i @click="delete_follow(user_item.id)" style="color:#cd2c2c;"
+                                        <i @click="add_follow(user_item.id)" style="color:#cd2c2c;"
                                            class="fas fa-user-times"></i>
                                     </template>
                                     <template v-else>

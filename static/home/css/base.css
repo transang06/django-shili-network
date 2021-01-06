@@ -259,6 +259,16 @@ label {
     border-radius: 10px;
 }
 
+.remove_cmt {
+    display: none;
+    color: #6b0101;
+    font-size: 19px;
+}
+
+.comment:hover .remove_cmt {
+    display: block;
+}
+
 .content_cmt {
     font-size: 18px;
     margin-left: 15px;
@@ -277,11 +287,6 @@ label {
 .remove_cmt {
     float: right;
     color: #a00606;
-}
-
-.remove_cmt:hover {
-    color: #6b0101;
-    font-size: 19px;
 }
 
 
@@ -556,11 +561,11 @@ label {
 .chat_window_top {
     color: #e3e1e1;
     background-color: #29323c;
-    margin:5px;
+    margin: 5px;
     padding: 0;
 }
 
-.chat_window_top img{
+.chat_window_top img {
     border-radius: 50%;
     width: 60px;
     height: 60px;
@@ -575,13 +580,13 @@ label {
     color: #fff;
 
 }
+
 .chat_window_top i {
     font-size: 25px;
     font-weight: bold;
     color: #fff;
     padding: 0;
 }
-
 
 
 .chat_window_content {

@@ -1,8 +1,4 @@
 import random
-
-from django.db import models
-
-# Create your models here.
 from post.models import Post, Comment
 from user.models import MyUser, Conversation, Message
 
@@ -10,63 +6,89 @@ from user.models import MyUser, Conversation, Message
 class ShiliEmail:
     def form_mail(self, url, content, email):
         form_mail = """
-           <!DOCTYPE html>
-           <html lang="en">
-           <head>
-               <meta charset="UTF-8">
-               <title>Title</title>
-               <style>
-                   html, body, ul {
-                       margin: 0;
-                       padding: 0;
-                       scroll-behavior: smooth;
-                   }        
-                   body {
-                       display: grid;
-                       grid-template: 1fr/1fr;
-                       background-color: #5B7D87;
-                   }
-                   #welcome {
-                       background-color: #5B7D87;
-                       background-image: -webkit-linear-gradient(45deg, #91B3BC 50%, #5B7D87 50%);
-                       display: flex;
-                       flex-flow: column wrap;
-                       align-content: center;
-                       justify-content: center;
-                       width: 100%;
-                       height: 100%;
-                       padding: 20px;
-                   }        
-                   #welcome #chao {
-                       font-family: "Segoe UI", serif;
-                       font-style: italic;
-                       font-size: 100px;
-                       color: #FFFFFF;
-                       font-weight: bold;
-                   }        
-                   #welcome p {
-                       text-align: right;
-                   }        
-                   .chu {
-                       font-family: "Consolas", serif;
-                       font-size: 25px;
-                       color: #FFFFFF
-                   }
-                   a{  font-style: unset;
-                       text-decoration: underline;
-                   }        
-               </style>
-           </head>
-           <body>
-           <div id="welcome">
-               <div>
-                   <div id="chao">WELCOME TO Shili</div>
-                   <p class="chu">Bắt trọn khoảnh khắc - Dẫn dắt xu hướng </p>
-                   <p class="chu"> Xin chào """ + email + """</p>
-                   <a class="chu" style="color: #06628c" href=" """ + url + """ " >""" + content + """</a>               
-                </div>
+       <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <style>
+                #index_login {
+                    background-color: #5B7D87;
+                    background-image: -webkit-linear-gradient(45deg, #91B3BC 50%, #5B7D87 50%);
+                    height: 100%;
+                    z-index: 0;
+                    padding: 50px;
+                    padding-top:0;
+                }
+        
+                .btn-grad {
+                    background-image: linear-gradient(to right, #FF512F 0%, #F09819 51%, #FF512F 100%);
+                }
+        
+                .btn-grad {
+                    margin: 20px auto;
+                    padding: 15px 45px;
+                    text-align: center;
+                    text-transform: uppercase;
+                    transition: 0.5s;
+                    background-size: 200% auto;
+                    color: #070000;
+                    box-shadow: 0 0 10px #eee;
+                    border-radius: 10px;
+                    display: block;
+                    font-weight: bold;
+                }
+        
+                .btn-grad:hover {
+                    background-position: right center;
+                    color: #efefef;
+                   
+                }
+        
+                .welcome h1 {
+                    font-family: "Segoe UI", serif;
+                    font-style: italic;
+                    font-size: 100px;
+                    color: #FFFFFF;
+                    font-weight: bold;
+                }
+        
+                .welcome h2, .welcome a {
+                    font-family: "Segoe UI", serif;
+                    font-style: italic;
+                    font-size: 35px;
+                    color: #FFFFFF;
+                    font-weight: bold;
+                    text-decoration: none;
+                }
+        
+                .welcome p {
+                    text-align: right;
+                    font-family: "Consolas", serif;
+                    font-size: 35px;
+                    color: #FFFFFF
+                }
+        
+                h1 span {
+                    font-family: 'Berkshire Swash', cursive;
+                    font-weight: bold;
+                    color: #F18E16;
+                    font-size: 150px;
+                    text-transform: capitalize;
+                    font-style: normal;
+                }
+            </style>
+        </head>
+        <body>
+        <div id="index_login">
+            <div class="welcome ">
+                <h1 class="col-12">WELCOME TO <span>Shili</span></h1>
+                <p class="col-12">Bắt trọn khoảnh khắc - Dẫn dắt xu hướng </p>
+                <h2> Xin chào """ + email + """</h2>
+                <a class="btn-grad" href=" """ + url + """ " >""" + content + """</a>
             </div>
-            </body>
+        </div>
+        </body>
              """
         return form_mail
 
