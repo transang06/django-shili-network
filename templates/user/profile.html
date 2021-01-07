@@ -7,7 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
 {% block noidung %}
     <div id="profile">
-        <template v-for="profile in get_profile.profile">
+        <template v-for="profile in get_profile.profile" >
             <div v-if="profile.cover_image" class="backgroundProfile"
                  :style="{ 'background-image': [`url(/media/${profile.cover_image}`]}"></div>
             <div v-else class="backgroundProfile"></div>
@@ -17,8 +17,6 @@
                 <div id="logo" v-else
                      style="background-image: url({% static 'user/images/avatar.png' %});"></div>
             </div>
-
-
             <h2 class="text-center my-2" @click="open_link(`/profile/${ profile.username}`)">
                 [[profile.full_name]] </h2>
             <div id="profile_icon" class="d-flex flex-row justify-content-center">
@@ -29,8 +27,6 @@
                     <i @click="add_follow(profile.user_id)" class="fas fa-user-plus mx-4"></i>
                 {% endif %}
             </div>
-
-
             <div class="user_follow" v-if="themes==='dangtheodoi'">
                 <h3>Đang theo dõi</h3>
                 <button @click="themes='duoctheodoi'" type="button" class="btn btn-secondary my-3">Xem người theo dõi
@@ -118,10 +114,8 @@
                 </template>
             </div>
             <div class="user_follow" v-if="themes==='thongtin'">
-                <div v-if="profile.is_superuser == 1" class="loaitaikhoan"><i
-                        class="fab fa-artstation">
-                </i>&nbsp; Người sáng lập &nbsp;<i class="fab fa-artstation"></i></div>
-                <div class="intro" v-if="profile.intro"><i class="fab fa-playstation"></i>&nbsp;
+                <div v-if="profile.is_superuser == 1" class="is_admin">Quản trị viên</div>
+                <div class="intro" v-if="profile.intro">&nbsp;
                     [[profile.intro]]
                 </div>
                 <div class="user_thongtin" v-if="profile.address">
@@ -300,7 +294,7 @@
                     </template>
                 </template>
                 <template v-else>
-                   <h3> Tài khoản này chưa có bài đăng nào</h3>
+                    <h3> Tài khoản này chưa có bài đăng nào</h3>
                 </template>
             </div>
         </template>

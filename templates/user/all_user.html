@@ -1,12 +1,11 @@
 {% extends 'home/base.html' %}
 {% load static %}
 {% block title %}Tất cả người dùng được đề xuất{% endblock %}
-
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
 {% block noidung %}
     <div class="user_follow">
         <h3>Tất cả người dùng</h3>
-        <template v-if="api_get_all_user.result.length">
+        <template v-if="api_get_all_user.result && api_get_all_user.result.length">
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 <div class="col" v-for="user_item in api_get_all_user.result" :key="user_item.username">
                     <div class="card">
@@ -41,7 +40,7 @@
             </div>
         </template>
         <template v-else>
-            <h4>Không có ai trong danh sách này</h4>
+            <h4>Không còn ai trong danh sách này vì bạn đã theo dõi toàn  bộ người  dùng</h4>
         </template>
     </div>
 {% endblock noidung %}

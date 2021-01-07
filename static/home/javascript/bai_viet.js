@@ -21,6 +21,7 @@ let home = new Vue({
             search: null,
             thongBao: [],
             themes: 'thongtin',
+            show_bar: false,
             edit: {
                 first_name: '',
                 first_name1: '',
@@ -89,9 +90,7 @@ let home = new Vue({
     },
 
     methods: {
-        test() {
-            alert('load');
-        },
+
         get_profile_func: function () {
             axios({
                 method: 'post',

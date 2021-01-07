@@ -1,10 +1,11 @@
 {% extends 'home/index.html' %}
 {% block title %}Xác thực tài khoản{% endblock %}
 {% block content %}
+<div class="text-center my-5">
+    <h2 style=" color: #f1f1f1;font-weight:bold;">Xin chào {{ email }}</h2>
+    <h3 style=" color: #f1f1f1;font-weight:bold;">Tài khoản của bạn đã được kích hoạt</h3>
+</div>
 
-    <h2 style=" color: #f1f1f1;font-weight:bold;" class="chu">Xin chào {{ email }}</h2>
-    <h3 style=" color: #f1f1f1;font-weight:bold;">Tài khoản của bạn đã được kích hoạt. Hãy đăng nhập nhé</h3>
-    <a href="{% url  'home:home' %}" class="btn-grad col-3 mt-5">Đăng Nhập Ngay</a>
 
 {% endblock %}
 

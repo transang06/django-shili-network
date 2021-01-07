@@ -33,7 +33,7 @@ class ApiGetProfile(View):
             data = json.loads(request.body.decode('utf-8'))
             database = Database(request.user.id)
             profile = database.get_profile(data['username'])
-            profile_posts = database.get_profile_posts(data['username'])
+            profile_posts = database.get_profile_posts(data['username'], request.user.username)
             profile_watching = database.get_watching(data['username'])
             profile_followed = database.get_followed(data['username'])
             return JsonResponse(
@@ -103,6 +103,7 @@ class Add_follow(View):
                 return HttpResponse('Hủy follow thành công, hãy tiếp tục theo dõi những người khác')
         else:
             return HttpResponse('Phiên đăng nhập đã hết hạn.')
+
 
 class AllUser(View):
     def get(self, request):

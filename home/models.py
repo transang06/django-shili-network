@@ -124,7 +124,7 @@ class Database:
 
     # Lấy toàn bộ bài đăng của tài khoản đang theo dõi
     def get_post_index(self):
-        sql = "SELECT * FROM post_post a JOIN user_myuser b ON a.user_id =  b.id WHERE a.user_id IN(SELECT followres_id FROM user_follower WHERE main_user_id = " + self.userid + ") OR a.user_id = " + self.userid + "  ORDER BY a.created_at DESC"
+        sql = "SELECT * FROM post_post a JOIN user_myuser b ON a.user_id =  b.id WHERE (a.user_id IN(SELECT followres_id FROM user_follower WHERE main_user_id = " + self.userid + ") OR a.user_id = " + self.userid + ")  AND a.public != 'Chỉ Mình Tôi' ORDER BY a.created_at DESC"
         return Post.objects.raw(sql)
 
     # Lấy ra thông tin 1 bài viết với id cụ thể
@@ -142,7 +142,7 @@ class Database:
             thisdict["username"] = i.username
             thisdict["full_name"] = i.first_name + i.last_name
             thisdict["feeling"] = i.feeling
-            thisdict["created_at"] = i.created_at
+            thisdict["created_at"] = i.created_at.strftime("%H:%M:%S ngày %m/%d/%Y")
             thisdict["public"] = i.public
             thisdict["content"] = i.content
             thisdict["hashtag"] = i.hashtag
@@ -190,7 +190,7 @@ class Database:
             thisdict["username"] = i.username
             thisdict["comment_id"] = i.comment
             thisdict["fullname"] = i.first_name + i.last_name
-            thisdict["created_at"] = i.created_at
+            thisdict["created_at"] = i.created_at.strftime("%H:%M:%S ngày %m/%d/%Y")
             thisdict["post_id"] = i.post_id
             comment_post_id.append(thisdict)
         return comment_post_id
@@ -214,15 +214,19 @@ class Database:
             thisdict["gender"] = i.gender
             thisdict["address"] = i.address
             thisdict["intro"] = i.intro
-            thisdict["date_joined"] = i.date_joined
+            thisdict["date_joined"] = i.date_joined.strftime("%H:%M:%S ngày %m/%d/%Y")
             thisdict["is_superuser"] = i.is_superuser
             profile.append(thisdict)
         return profile
 
     # Lấy ra tất cả bài viết của username nhập vào
-    def get_profile_posts(self, username):
-        sql = "SELECT * FROM post_post a JOIN user_myuser b ON a.user_id =  b.id WHERE b.username ='" + str(
-            username) + "' ORDER BY created_at DESC"
+    def get_profile_posts(self, username, session_user):
+        if username != session_user:
+            sql = "SELECT * FROM post_post a JOIN user_myuser b ON a.user_id =  b.id WHERE b.username ='" + str(
+                username) + "'  AND a.public != 'Chỉ Mình Tôi' ORDER BY created_at DESC"
+        else:
+            sql = "SELECT * FROM post_post a JOIN user_myuser b ON a.user_id =  b.id WHERE b.username ='" + str(
+                username) + "' ORDER BY created_at DESC"
         get_profile_posts = Post.objects.raw(sql)
         profile_posts = []
         for i in get_profile_posts:
@@ -231,7 +235,7 @@ class Database:
             thisdict["username"] = i.username
             thisdict["full_name"] = i.first_name + " " + i.last_name
             thisdict["feeling"] = i.feeling
-            thisdict["created_at"] = i.created_at
+            thisdict["created_at"] = i.created_at.strftime("%H:%M:%S ngày %m/%d/%Y")
             thisdict["public"] = i.public
             thisdict["content"] = i.content
             thisdict["hashtag"] = i.hashtag
@@ -329,7 +333,7 @@ class Database:
         for i in mess:
             thisdict = {}
             thisdict["from_user_id"] = i.from_user_id
-            thisdict["created_at"] = i.created_at
+            thisdict["created_at"] = i.created_at.strftime("%H:%M:%S ngày %m/%d/%Y")
             thisdict["content"] = i.content
             thisdict["m_id"] = i.m_id
             context_box_chat.append(thisdict)

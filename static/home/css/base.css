@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Berkshire+Swash&display=swap');
 
 * {
     font-family: 'Nunito', sans-serif;
@@ -70,7 +71,7 @@ body {
     top: 50px;
 }
 
-.sticky i {
+#icon_bar i {
     font-size: 40px;
     width: 90px;
     height: auto;
@@ -81,7 +82,7 @@ body {
     padding: 20px;
 }
 
-.sticky i:hover {
+#icon_bar i:hover {
     color: #192841;
     font-size: 55px;
     padding: 10px;
@@ -100,7 +101,7 @@ body {
     width: 100%;
     z-index: -1;
     border-radius: 0 0 0 150px;
-    border-bottom: 2px solid #000000;
+    border-bottom: 1px solid #ffffff;
 }
 
 #profile {
@@ -146,13 +147,14 @@ body {
 
 /*=========================*/
 .baidang {
-    background-color: #ffffff;
+    background-color: #f5f5f5;
     box-shadow: 0 0 2px #070000;
     min-height: 100px;
     border-radius: 10px;
     padding: 30px;
     text-align: left;
-    z-index: 100;
+    z-index: 10;
+
 }
 
 
@@ -247,6 +249,8 @@ label {
 /*====================================*/
 .cmt_input {
     border-radius: 20px;
+    border: 1px solid #b8b0b0;
+    box-shadow: 0 0 1px rgb(203, 199, 199)
 }
 
 .cmt_input[placeholder] {
@@ -316,7 +320,7 @@ label {
 }
 
 #profile_icon i:hover {
-    color: #cfcfcf;
+    color: #29323c;
 }
 
 #logo {
@@ -380,7 +384,6 @@ label {
 .card:hover {
     border-radius: 10px;
     background-color: #29323c;
-
     box-shadow: 0 0 4px #4a698c;
 }
 
@@ -477,12 +480,13 @@ label {
     border: none;
 }
 
-.loaitaikhoan {
+.is_admin {
     font-size: 20px;
     font-style: italic;
     text-align: center;
     text-transform: uppercase;
     font-weight: bold;
+    color: #ff7100;
 }
 
 .date_joined {
@@ -661,4 +665,73 @@ a {
 }
 
 
+/*==============boot*/
+.dropdown-menu-dark {
+    padding: 5px
+}
 
+.dropdown-menu-dark li {
+    padding: 10px 10px
+}
+
+.dropdown-menu-dark li:hover {
+    color: #343a40;
+    background-color: #faf8f8;
+}
+
+
+.show_bar {
+    display: none;
+    background: #2B4251;
+    min-height: 50px;
+}
+.show_bar i {
+    float: right;
+    margin: 10px;
+    font-size: 30px;
+    color: #F18E16;
+}
+
+.sticky span {
+    font-family: 'Berkshire Swash', cursive;
+    font-weight: bold;
+    color: #F18E16;
+    font-size: 30px;
+    text-transform: capitalize;
+    font-style: normal;
+    margin: 10px;
+}
+
+@media (max-width: 576px) {
+    .show_bar {
+        display: block;
+    }
+
+    .ds {
+        display: none;
+    }
+
+
+    .sticky {
+        width: 100%;
+        background: #5b7d87;
+        position: fixed;
+        top: 0;
+        margin: 0;
+        left: 0;
+        z-index: 1000;
+    }
+
+    .container-fluid {
+        margin: 0;
+        padding: 0;
+    }
+    .icon_bar {
+        height: 100vh;
+        display: block;
+    }
+    #icon_bar i {
+        font-size: 55px;
+        width: 150px;
+    }
+}
