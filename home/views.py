@@ -15,7 +15,12 @@ from user.models import MyUser
 class Index(View):
     def get(self, request):
         if request.user.is_authenticated:
-            return render(request, 'home/home.html', {'page': 'Trang chủ Shili'})
+            database = Database(request.user.id)
+            kt = database.get_watching(request.user.username)
+            if kt:
+                return render(request, 'home/home.html', {'page': 'Trang chủ Shili'})
+            else:
+                return render(request, 'user/all_user.html', {'page': 'all_user'})
 
         else:
             return render(request, 'home/index.html')

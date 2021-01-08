@@ -174,11 +174,13 @@ body {
     font-size: 20px;
     font-weight: bold;
     color: #004c7a;
+     text-transform: capitalize;
 
 }
 
 .post_name:hover {
     color: #004c7a;
+
 }
 
 .post_time {

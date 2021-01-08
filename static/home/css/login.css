@@ -19,10 +19,13 @@ html, body, ul {
     margin: 0;
     padding: 0;
     scroll-behavior: smooth;
+
 }
+
 
 #index_login {
     background-color: #5B7D87;
+
 
 }
 .bg{
@@ -230,3 +233,4 @@ button{
 .xanh {
     box-shadow: 0 0 10px #00ff57;
 }
+
