@@ -8,7 +8,7 @@ import json
 from django.views import View
 
 from home.models import ShiliEmail, MaHoaOneTimePad, Database
-from post.models import Post
+
 from user.models import MyUser
 
 

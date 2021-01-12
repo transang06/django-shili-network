@@ -114,6 +114,7 @@ h1 span {
     width: 100%;
     height: 100%;
     z-index: 1;
+
 }
 
 .form {
@@ -127,6 +128,7 @@ h1 span {
     flex-flow: row wrap;
     align-content: space-around;
     justify-content: space-around;
+    padding: 30px;
 }
 
 .login_ input {

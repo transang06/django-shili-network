@@ -74,28 +74,27 @@
                 </div>
             </template>
             <template v-if="themes === 'forgotPass'">
-                <div class="form login_">
+                <div class="form login_ p-3">
                     <h2>Quên Mật Khẩu</h2>
-                    <div>
+
                         {% csrf_token %}
                         <input type="email" v-model="password.email" placeholder="Email">
                         <h6 class="my-4 thong_bao"> [[password.result]]</h6>
                         <button class="btn-grad" @click="forgotPass_func">Lấy lại mật khẩu</button>
-                    </div>
-                    <small @click="themes='login'"> Trở lại</small>
+
+                    <small class="col-12" @click="themes='login'"> Trở lại</small>
                 </div>
             </template>
             <template v-if="themes === 'kich_hoat'">
-                <div class="form login_">
+                <div class="form login_ p-3">
                     <h2>Kích hoạt tài khoản</h2>
                     <div>
                         {% csrf_token %}
                         <input type="email" v-model="activate.email" placeholder="Nhập email">
                         <h6 class="my-4  thong_bao"> [[activate.result]]</h6>
-
                         <button class="btn-grad" @click="activate_func()">Kích hoạt tài khoản</button>
                     </div>
-                    <small @click="themes='login'"> Trở lại</small>
+                    <small class="col-12" @click="themes='login'"> Trở lại</small>
                 </div>
             </template>
             <template v-if="themes === 'register'">

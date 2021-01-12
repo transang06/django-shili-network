@@ -63,12 +63,15 @@
                 </div>
             </div>
         </template>
+        <h5 v-if="!post_id" style="color:#f5f5f5;">Hi {{ user.last_name }} ! Không còn bài viết nào khác hãy theo dõi mọi người để tiếp
+            cận thêm nhiều bài viết nữa</h5>
     </template>
     <template v-else>
         <div class="user_follow">
             <h2>Không tồn tại bài viết này</h2>
         </div>
     </template>
+
 {% endblock noidung %}
 
 <script src="{% static 'home/javascript/bai_viet.js' %}"></script>

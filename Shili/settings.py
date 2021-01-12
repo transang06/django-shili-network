@@ -23,7 +23,7 @@ SECRET_KEY = 'owh=2_z*fzetgdqb8m417snp3o*9e(-(ps1bk8q8tw6w=1!uzc'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-# DEBUG = False
+
 
 ALLOWED_HOSTS = []
 
@@ -107,13 +107,13 @@ AUTH_USER_MODEL = 'user.MyUser'
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Asia/Ho_Chi_Minh'
+# TIME_ZONE = 'Asia/Ho_Chi_Minh'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+# USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
@@ -123,7 +123,6 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
     '/static/',
 ]
-
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -136,5 +135,3 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'smpasoftware@gmail.com'
 EMAIL_HOST_PASSWORD = '0349923955a'
 EMAIL_PORT = 587
-
-

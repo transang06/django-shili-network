@@ -9,6 +9,15 @@
 body {
     background-image: linear-gradient(to top, #09203f 0%, #537895 100%);
     min-height: 100vh;
+    animation: animation 1.5s ease-in-out;
+}
+@keyframes animation {
+	0% {
+		opacity:0;
+	}
+	100% {
+		opacity:1;
+	}
 }
 
 ::-webkit-scrollbar {
@@ -239,12 +248,17 @@ label {
     color: #002d8c;
 }
 
+.card-title h5{
+    text-transform: capitalize;
+}
+
 .post_image {
     width: 100%;
-    border: 0 solid #3e809bcc;
-    box-shadow: 0 0 10px #000000;
+    margin: 20px auto;
+    border: 1px solid #3e809bcc;
+    box-shadow: 0 0 10px #a09e9e;
     border-radius: 10px;
-    margin: 20px 0
+
 }
 
 

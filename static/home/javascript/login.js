@@ -18,7 +18,7 @@ let index_login = new Vue({
             result: null,
             password1: null,
             password2: null,
-            check:false
+            check: false
         },
         activate: {
             email: null,
@@ -132,10 +132,11 @@ let index_login = new Vue({
             return this.sign_up.checkEmail = /\S+@\S+\.\S+/.test(this.sign_up.email);
         },
         checkPassword_func: function () {
-            return this.sign_up.checkPassword = this.sign_up.password1 === this.sign_up.password2;
+            return this.sign_up.checkPassword = this.sign_up.password1 === this.sign_up.password2 && this.sign_up.password1 !== '' && /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/.test(this.sign_up.password1);
         },
         checkResetPassword: function () {
-            return this.password.check = this.password.password1 === this.password.password2 && this.password.password1 !== '';
+
+            return this.password.check = this.password.password1 === this.password.password2 && this.password.password1 !== '' && /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/.test(this.password.password1);
         },
         register_func: function () {
             if (this.checkUserName_func() && this.checkEmail_func() && this.checkPassword_func() && this.sign_up.birthday && this.sign_up.gender && this.sign_up.firstname && this.sign_up.lastname) {

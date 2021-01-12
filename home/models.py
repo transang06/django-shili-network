@@ -140,7 +140,7 @@ class Database:
             thisdict = {}
             thisdict["post_id"] = i.post
             thisdict["username"] = i.username
-            thisdict["full_name"] = i.first_name + i.last_name
+            thisdict["full_name"] = i.first_name + " " + i.last_name
             thisdict["feeling"] = i.feeling
             thisdict["created_at"] = i.created_at.strftime("%H:%M:%S ngày %m/%d/%Y")
             thisdict["public"] = i.public
